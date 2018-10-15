@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Link, Switch, Route } from 'react-router-dom'
+import Speakers from './components/speakers/Speakers'
+import SpeakersRedux from './components/speakers/SpeakersRedux'
 
 const Root = () => (
   <h2>Home component</h2>
@@ -28,11 +30,15 @@ class App extends Component {
               <li><Link to='/'>Home</Link></li>
               <li><Link to='/search'>Search</Link></li>
               <li><Link to='/list'>List</Link></li>
+              <li><Link to='/speakers'>Speakers</Link></li>
+              <li><Link to='/speakers-redux'>Speakers Redux</Link></li>
             </ul>
           <Switch>
               <Route exact path='/' component={Root} />
               <Route path='/search' component={Search} />
               <Route path='/list' component={List} />
+              <Route exact path='/speakers' component={Speakers} />
+              <Route exact path='/speakers-redux' component={SpeakersRedux} />
             </Switch>
         </div>
       </BrowserRouter>
