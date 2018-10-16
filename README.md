@@ -363,6 +363,7 @@ npm test
 ```
 
 ## Flux and [Redux](https://redux.js.org)
+* [See Getting Started with Redux](Redux.md)
 * Flux is an architectural pattern
 * Redux is an implementation of the pattern
 * For complex applications
@@ -401,9 +402,6 @@ if(error.response)
 ```
 {this.state.appData.map(item => ( <Component key={item.id} />))}
 ```
-
-## Redux
-* [See Getting Started with Redux](Redux.md)
 
 ## Mocking Api with (json-server)[https://github.com/typicode/json-server]
 1. Install json-server using the following command
