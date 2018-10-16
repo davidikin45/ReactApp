@@ -6,12 +6,19 @@ import axiosMiddleware from 'redux-axios-middleware';
 
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-const restUrl = '';
+const production = true;
+
+const apiUrl = 'http://localhost:4000/api';
 
 let middleware = [
     thunk,
-    axiosMiddleware(axios.create({baseURL:restUrl}))
+    axiosMiddleware(axios.create({baseURL:apiUrl}))
 ];
+
+if (!production) {
+    middleware.push(require('redux-immutable-state-invariant').default());
+    console.log('added redux-immutable-state-invariant');
+}
 
 export default function configureStore(initialState = {}) {
 
