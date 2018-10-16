@@ -9,6 +9,16 @@
 * New concept around state and UI updates
 * State stored outside of components
 * Action > Dispatcher > Store  > View
+* Immutability
+
+## Immutability (Merge or Copy)
+Clone and modify instead of mutating original
+```
+var history[];
+var state = {color: 'red', name:'Adam', point:5}
+var state2 = Object.assign({}, state, {point: 50})
+history.push(state, state2);
+```
 
 ## Redux Thunk
 1. Install axios and redux thunk

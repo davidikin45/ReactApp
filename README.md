@@ -304,7 +304,62 @@ class App extends Component {
 }
 
 export default App;
+```
 
+## Example Class Component 2 - Updating State
+```
+class Score extends React.Component {
+	constructor(props){
+		super(props);
+		this.state = {score:0};
+		
+		//make 'this' available in click handlers
+		this.incrementScore = this.incrementScore.bind(this);
+    this.decrementScore = this.decrementScore.bind(this);
+    
+    this.handleChange = this.handleChange.bind(this);
+	}
+	
+  componentDidMount(){
+
+  }
+  
+	incrementScore(){
+		this.setState(
+		{ score: this.state.score + 1 }
+		);
+	}	
+	
+	decrementScore(){
+		this.setState(
+		{ score: this.state.score - 1 }
+		);
+	}	
+  
+   handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+  
+	render()
+	{
+  	//Destructuring
+    var {teamName} = this.props;
+		return (
+		<div>
+		<h2>Score board for the {teamName}</h2>
+		<div>
+		Score: {this.state.score}<br/>
+    <input value={this.state.value} onChange={this.handleChange} />
+		<button onClick={this.incrementScore}>+</button>
+		<button onClick={this.decrementScore}>-</button>
+    {this.state.value}
+		</div>
+		</div>
+		);
+	}
+}
+
+ReactDOM.render(<Score teamName="Tigers" />, mountNode);
 ```
 
 ## Simple React Snippet for Class Component
@@ -328,7 +383,7 @@ export default House;
 ```
 constructor()
 render()
-componentDidMount()
+componentDidMount() //Called immediately after first render once 
 ```
 
 ## Lifecycle Methods Updating
