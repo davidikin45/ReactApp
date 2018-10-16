@@ -27,6 +27,7 @@ npm install bootstrap@4
 npm install prop-types
 npm install react-router-dom
 npm install axios
+npm install lodash
 ```
 3. Add the following import to src/index.js
 ```
@@ -193,6 +194,9 @@ class App extends Component {
 export default App;
 
 ```
+
+## Useful things to know
+* function name(){ } is equivalent to ()=>{ }
 
 ## React Development Workflow
  JSX > Babel (react-scripts) > React JavaScript (react) > React Dom (react-dom) > Html

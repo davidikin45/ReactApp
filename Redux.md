@@ -10,6 +10,9 @@
 * State stored outside of components
 * Action > Dispatcher > Store  > View
 * Immutability
+* Makes state predictable
+
+** You Might Not Need Redux(https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
 
 ## Immutability (Merge or Copy)
 Clone and modify instead of mutating original
@@ -18,6 +21,146 @@ var history[];
 var state = {color: 'red', name:'Adam', point:5}
 var state2 = Object.assign({}, state, {point: 50})
 history.push(state, state2);
+```
+```
+var history[];
+var state = {color: 'red', name:'Adam', point:5};
+var state2 = {...state, point: 50};
+history.push(state, state2);
+```
+
+## Redux Packages
+* redux: main library (independent from React)
+* react-redux: connects your redux store with ReactComponents (Takes care of subscribing to state changes that re-render component and child components)
+* redux-thunk: a redux middleware which helps you with async actions
+
+## Redux Only Example
+1. Create new app and install redux
+```
+npm create-react-app my-app --use-npm
+install redux
+```
+2. create a store/configureStore.js file and import from index.js
+```
+import { createStore } from 'redux'; 
+
+var defaultState = {
+    originAmount: '0.00'
+};
+
+function amount(state = defaultState, action){
+    if(action.type === 'CHANGE_ORIGIN_AMOUNT')
+    {
+        //immutable - new object, copy old state and update
+        //=== to see if you are referring to the same object
+     
+        var newState = Object.assign({}, state, {originAmount: action.data});
+        console.log('same?', state === newState);
+        return newState;
+    }
+
+    if(action.type === 'CHANGE_ORIGIN_AMOUNT2')
+    {
+        //immutable - new object, copy old state and update
+        //=== to see if you are referring to the same object
+     
+        //object spread
+        return {
+            ...state,
+            originAmount: action.data
+        };
+    }
+    
+    return state;
+}
+
+var store = createStore(amount);
+
+store.subscribe(function(){
+    console.log('state', store.getState());
+})
+
+store.dispatch({type:'CHANGE_ORIGIN_AMOUNT', data: '300.65' });
+store.dispatch({type:''});
+store.dispatch({type:''});
+
+export default store;
+```
+
+## React-Redux Example
+* Dispatch actions using this.props.dispatch({type:"CHANGE_ORIGIN_AMOUNT", data:{}})
+1. Create new app and install redux
+```
+npm create-react-app my-app --use-npm
+install redux
+install react-redux
+```
+2. create a store/configureStore.js file and import from index.js
+```
+import { createStore } from 'redux'; 
+
+var defaultState = {
+    originAmount: '0.00'
+};
+
+function amount(state = defaultState, action){
+    if(action.type === 'CHANGE_ORIGIN_AMOUNT')
+    {
+        //immutable - new object, copy old state and update
+         return {
+            ...state,
+            originAmount: action.data
+        };
+    }
+	
+    return state;
+}
+
+var store = createStore(amount);
+
+export default store;
+```
+3. Within index.js wrap the App tag with a Provider and pass in the store.
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import * as serviceWorker from './serviceWorker';
+
+import { Provider } from 'react-redux';
+import App from './App'
+import store from'./store/configureStore';
+
+ReactDOM.render(<Provider store={store}>
+                    <App />
+                </Provider>, document.getElementById('root'));
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: http://bit.ly/CRA-PWA
+serviceWorker.unregister();
+```
+4. Connect the component to redux by using the connect import
+```
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+ 
+class UpdateScore extends Component {
+    state = {  }
+    render() { 
+        return (<div></div>);
+    }
+}
+ 
+export default connect((state, props) =>{
+    console.log('connect state', state);
+    console.log('connect props', props);
+
+    //return new props
+    return {
+        originAmount: state.originAmount
+    }
+})(UpdateScore);
 ```
 
 ## Redux Thunk
