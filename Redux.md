@@ -140,7 +140,7 @@ ReactDOM.render(<Provider store={store}>
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 ```
-4. Connect the component to redux by using the connect import
+4. Connect the container component to redux by using the connect import
 ```
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
@@ -162,6 +162,7 @@ export default connect((state, props) =>{
     }
 })(UpdateScore);
 ```
+5. It is convention to put connected componentents in a containers folder and non connected components in the components folder
 
 ## Redux Thunk
 1. Install axios and redux thunk
