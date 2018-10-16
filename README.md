@@ -362,15 +362,6 @@ House.propTypes = {house: PropTypes.object.isRequired}
 npm test
 ```
 
-## Flux and [Redux](https://redux.js.org)
-* [See Getting Started with Redux](Redux.md)
-* Flux is an architectural pattern
-* Redux is an implementation of the pattern
-* For complex applications
-* New concept around state and UI updates
-* State stored outside of components
-* Action 1 > 1 Dispatcher 1 > m Store  > 1 View
-
 ## React Api calls using axios
 1. Install axios
 ```
@@ -427,16 +418,25 @@ npm install npm-run-all --save-dev
 {
     "/api/*": "/$1"
 }
-'''
+```
 4. to package.json add the following script executions
 ```
-    "apiserver": "json-server --routes db-routes.json --watch sdb.json --port 4000",
+    "apiserver": "json-server --routes db-routes.json --watch src/db.json --port 4000",
     "startapiserver": "npm-run-all --parallel start apiserver"
 ```
 5. launch with the following command
 ```
 npm run startjsonserver
 ```
+
+## Flux and [Redux](https://redux.js.org)
+* [See Getting Started with Redux](Redux.md)
+* Flux is an architectural pattern
+* Redux is an implementation of the pattern
+* For complex applications
+* New concept around state and UI updates
+* State stored outside of components
+* Action 1 > 1 Dispatcher 1 > m Store  > 1 View
 
 ## New Projects with .NET Core
 * [dotnet new react -o my-new-app](https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/react?view=aspnetcore-2.1&tabs=visual-studio)
