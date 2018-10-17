@@ -11,6 +11,7 @@
 * Action > Dispatcher > Store  > View
 * Immutability
 * Makes state predictable
+* A thunk is a function that wraps an expression to delay it's execution.
 
 ** You Might Not Need Redux(https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
 
@@ -33,6 +34,47 @@ history.push(state, state2);
 * redux: main library (independent from React)
 * react-redux: connects your redux store with ReactComponents (Takes care of subscribing to state changes that re-render component and child components)
 * redux-thunk: a redux middleware which helps you with async actions
+
+## Redux Process
+1. Dispatch Action
+```
+this.props.dispatch({type:"CHANGE_ORIGIN_AMOUNT", data:{}})
+```
+2. Client and update store state using Reducer
+```
+var defaultState = {
+    originAmount: '0.00'
+};
+
+function amountReducer(state = defaultState, action){
+    if(action.type === 'CHANGE_ORIGIN_AMOUNT')
+    {
+        //immutable - new object, copy old state and update
+        return {
+            ...state,
+            originAmount: action.data.newAmount
+        };
+    } else if(action.type === 'RECEIVED_CONVERSION_RATE')
+    {
+        //immutable - new object, copy old state and update
+        return {
+            ...state,
+            conversionRate: action.data.xRate,
+            destinationAmount: action.data.destAmount
+        };
+    }
+    
+    return state;
+}
+```
+3. Update component UI props using connect mapStateToProps
+```
+export default connect((state, props) => {
+    return {
+        originAmount: state.originAmount
+    }
+})(Conversion);
+```
 
 ## Redux Only Example
 1. Create new app and install redux
@@ -92,33 +134,74 @@ export default store;
 1. Create new app and install redux
 ```
 npm create-react-app my-app --use-npm
-install redux
-install react-redux
+npm install redux
+npm install react-redux
+npm install redux-logger
+npm install redux-immutable-state-invariant
+npm install redux-devtools-extension
 ```
 2. create a store/configureStore.js file and import from index.js
 ```
-import { createStore } from 'redux'; 
+import { applyMiddleware, createStore, compose  } from 'redux';
+import { createLogger } from 'redux-logger';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 var defaultState = {
     originAmount: '0.00'
 };
 
-function amount(state = defaultState, action){
+function amountReducer(state = defaultState, action){
     if(action.type === 'CHANGE_ORIGIN_AMOUNT')
     {
         //immutable - new object, copy old state and update
-         return {
+        //=== to see if you are referring to the same object
+     
+        var newState = Object.assign({}, state, {originAmount: action.data});
+        console.log('same?', state === newState);
+        return newState;
+    }
+
+    if(action.type === 'CHANGE_ORIGIN_AMOUNT2')
+    {
+        //immutable - new object, copy old state and update
+        //=== to see if you are referring to the same object
+     
+        //object spread
+        return {
             ...state,
             originAmount: action.data
         };
     }
-	
+    
     return state;
 }
 
-var store = createStore(amount);
+const middleware = [];
 
-export default store;
+if (process.env.NODE_ENV === 'development') {
+    console.log('Running in Development Mode');
+    
+    const immutableState = require('redux-immutable-state-invariant').default();
+    middleware.push(immutableState);
+
+    const logger = createLogger({collapsed: true});
+    middleware.push(logger);
+}
+
+export default function configureStore(initialState = {}) {
+
+    //func1(func2(func3(func4))))
+    //compose allows compose(func1, func2, func3, func4)
+    const composeEnhancers = composeWithDevTools({
+        // Specify name here, actionsBlacklist, actionsCreators and other options if needed
+    });
+
+    return createStore(
+        amountReducer,
+         composeEnhancers(
+            applyMiddleware(...middleware))
+    );
+}
 ```
 3. Within index.js wrap the App tag with a Provider and pass in the store.
 ```
@@ -129,7 +212,8 @@ import * as serviceWorker from './serviceWorker';
 
 import { Provider } from 'react-redux';
 import App from './App'
-import store from'./store/configureStore';
+import configureStore from "./store/configureStore";
+const store = configureStore(window.__STATE__);
 
 ReactDOM.render(<Provider store={store}>
                     <App />
@@ -163,42 +247,51 @@ export default connect((state, props) =>{
 })(UpdateScore);
 ```
 5. It is convention to put connected componentents in a containers folder and non connected components in the components folder
+6. The react-redux logger gives extremely useful information in regards to what is happening under the hood in regards to state.
 
-## Redux Thunk
+![alt text](redux-logger.jpg "Redux")
+
+## Redux Thunk (Allows dispatching functions rather than events)
+* Dispatch functions using this.props.dispatch(function(dispatch){})
 1. Install axios and redux thunk
 ```
-npm install axios
-npm install redux react-redux redux-axios-middleware react-router-redux redux-thunk redux-devtools-extension --save
+npm install axios lodash keymirror
+npm install redux react-redux redux-logger redux-axios-middleware react-router-redux redux-thunk redux-logger  redux-devtools-extension --save
 npm install redux-immutable-state-invariant --save-dev
 ```
 2. Create the following directories
 ```
-\redux
-\redux\reducers
-\redux\actions
+\store
+\store\reducers
+\store\actions
 ```
-3. Create a redux\configureStore.js file and put in the following contents.
+3. Create a store\configureStore.js file and put in the following contents.
 ```
 import {createStore, applyMiddleware} from 'redux';
-import thunk from 'redux-thunk';
-import reducers from './reducers';
 import axios from 'axios';
 import axiosMiddleware from 'redux-axios-middleware';
-
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { createLogger } from 'redux-logger';
+import thunk from 'redux-thunk';
 
-const production = true;
+import rootReducer from './reducers/index';
 
 const apiUrl = 'http://localhost:4000/api';
 
-let middleware = [
+const middleware = [
     thunk,
     axiosMiddleware(axios.create({baseURL:apiUrl}))
 ];
 
-if (!production) {
-    middleware.push(require('redux-immutable-state-invariant').default());
-    console.log('added redux-immutable-state-invariant');
+if (process.env.NODE_ENV === 'development') {
+    console.log('Running in Development Mode');
+    
+    const immutableState = require('redux-immutable-state-invariant').default();
+    middleware.push(immutableState);
+
+    //logger must be last
+    const logger = createLogger({collapsed: true});
+    middleware.push(logger);
 }
 
 export default function configureStore(initialState = {}) {
@@ -208,15 +301,19 @@ export default function configureStore(initialState = {}) {
     });
 
     return createStore(
-        reducers,
+        rootReducer,
         initialState,
          composeEnhancers(
             applyMiddleware(...middleware))
     );
 }
 ```
-4. Example action\speakers.js
+4. Example action\speakers.js.
+The event payloads are stored in a seperate file.
 ```
+import axios from 'axios';
+import debounce from 'lodash.debounce';
+
 export const SPEAKER_LOAD = 'SPEAKER_LOAD';
 export const SPEAKER_LOAD_SUCCESS = 'SPEAKER_LOAD_SUCCESS';
 export const SPEAKER_LOAD_FAIL = 'SPEAKER_LOAD_FAIL';
@@ -231,17 +328,59 @@ export function speakersFetchData() {
         }
     }
 }
+
+export function fetchConversionRate(payload)
+{
+    return (dispatch) => {
+        makeConversionAjaxCall(payload, dispatch);
+    };
+}
+
+function _makeConversionAjaxCall(payload, dispatch)
+{
+    dispatch({type:"REQUEST_CONVERSION_RATE", data: payload});
+
+            // ajax call for destination amount
+        // originCurrency, destCurrency, originAmount
+        axios.get('/api/conversion', {
+            params: payload
+        })
+        .then((resp) => {
+            dispatch({type:"RECEIVED_CONVERSION_RATE_SUCCESS", data: resp.data});
+        })
+        .catch((err)=>{
+            dispatch({type:"RECEIVED_CONVERSION_RATE_FAILURE", data: err});
+        });
+}
+
+//debounce waits a specified period before sending request
+var makeConversionAjaxCall = debounce(_makeConversionAjaxCall, 300);
 ```
-5. Example reducers\speakers.js
+5. It is often a good idea to extract the action constants into another file named actionTypes.js
+```
+import keyMirror from 'keymirror';
+
+export var ActionTypes = keyMirror({
+    CHANGE_ORIGIN_AMOUNT: null
+})
+```
+They can then be imported and used in the reducer and actions file using the following:
+```
+import { ActionTypes as types } from './actionTypes';
+types.CHANGE_ORIGIN_AMOUNT
+```
+6. Example reducers\speakers.js
 ```
 import {SPEAKER_LOAD, SPEAKER_LOAD_FAIL, SPEAKER_LOAD_SUCCESS} from "../actions/speakers";
 
-export function speakers(state = {
+var defaultState = {
     data: [],
     isLoading: true,
     hasErrored: false,
     errorMessage: ""
-}, action) {
+};
+
+export function speakers(state = defaultState, action) {
     switch (action.type) {
 
         case SPEAKER_LOAD: {
@@ -272,16 +411,16 @@ export function speakers(state = {
     }
 }
 ```
-6. Create a reducers\index.js file and put in the following contents.
+7. Create a reducers\index.js file and put in the following contents. React expects one reducer.
 ```
 import { combineReducers } from 'redux';
-import {speakers} from './speakers';
+import { speakers } from './speakers';
 
 export default combineReducers({
-    speakers
+    speakers : speakers
 })
 ```
-7. update index.js to include the Provider element
+8. update index.js to include the Provider element
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -304,7 +443,7 @@ ReactDOM.render(
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 ```
-8. Dispatching action in a component
+9. Dispatching action in a component
 ```
 import React, {Component} from 'react';
 
@@ -354,10 +493,45 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,{speakersFetchData})(SpeakersRedux)
 ```
-9. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) 
+10. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
+```
+export default connect((state, props) => {
+    return {
+        originAmount: state.amount.originAmount,
+        destinationAmount: state.amount.destinationAmount,
+        conversionRate: state.amount.conversionRate,
+        feeAmount: state.amount.feeAmount,
+        totalCost : state.amount.totalCost
+    }
+})(Conversion);
+```
+11. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) 
+
+## Reducer Template
+[Immutable Update Patterns](https://redux.js.org/recipes/structuringreducers/immutableupdatepatterns)
+Try and keep reducer state flat and one level
+```
+var defaultState ={
+
+}
+
+function error(state = defaultState, action){
+    switch(action.type)
+    {
+        case(''):
+            return {
+                ...state
+            }
+        default:
+            return state;
+    }
+}
+
+export default error;
+```
 
 ## PluralSight Courses
-* [Redux Fundamental](https://app.pluralsight.com/library/courses/redux-fundamentals/table-of-contents)
+* [Redux Fundamentals](https://app.pluralsight.com/library/courses/redux-fundamentals/table-of-contents)
 * [Building a Website with React and ASP.NET Core](https://www.pluralsight.com/courses/aspdotnet-core-react-building-website)
 
 ## Authors

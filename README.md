@@ -366,6 +366,31 @@ class Score extends React.Component {
 ReactDOM.render(<Score teamName="Tigers" />, mountNode);
 ```
 
+## Prop Types for Type Safety
+1. It is a good idea to always use prop-types for type safety.
+2. Install using the following command
+```
+npm install prop-types
+```
+3. Example class component with prop-types
+```
+import React, { Component } from 'react';
+import PropTypes from 'prop-types'
+
+class UpdateScore extends Component {
+    state = {  }
+    render() { 
+        return (<div></div>);
+    }
+}
+
+UpdateScore.propTypes = {
+    conversionRate: PropTypes.number.isRequired
+}
+
+export default UpdateScore;
+```
+
 ## Simple React Snippet for Class Component
 imrc + tab = import React Component
 ```

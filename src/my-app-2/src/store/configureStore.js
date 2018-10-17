@@ -1,35 +1,35 @@
-import { createStore } from 'redux';
+import { applyMiddleware, createStore, compose  } from 'redux';
+import { createLogger } from 'redux-logger';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import thunk from 'redux-thunk';
 
-var defaultState = {
-    originAmount: '0.00'
-};
+import rootReducer from '../store/reducers/index'
 
-function amount(state = defaultState, action){
-    if(action.type === 'CHANGE_ORIGIN_AMOUNT')
-    {
-        //immutable - new object, copy old state and update
-        //=== to see if you are referring to the same object
-     
-        var newState = Object.assign({}, state, {originAmount: action.data});
-        console.log('same?', state === newState);
-        return newState;
-    }
+const middleware = [thunk];
 
-    if(action.type === 'CHANGE_ORIGIN_AMOUNT2')
-    {
-        //immutable - new object, copy old state and update
-        //=== to see if you are referring to the same object
-     
-        //object spread
-        return {
-            ...state,
-            originAmount: action.data
-        };
-    }
-    
-    return state;
+if (process.env.NODE_ENV === 'development') {
+    console.log('Running in Development Mode');
+
+    const immutableState = require('redux-immutable-state-invariant').default();
+    middleware.push(immutableState);
+
+    //logger must be last.
+    const logger = createLogger({collapsed: true});
+    middleware.push(logger);
 }
 
-var store = createStore(amount);
+export default function configureStore(initialState = {}) {
 
-export default store;
+    //func1(func2(func3(func4))))
+    //compose allows compose(func1, func2, func3, func4)
+    const composeEnhancers = composeWithDevTools({
+        // Specify name here, actionsBlacklist, actionsCreators and other options if needed
+    });
+
+    return createStore(
+        rootReducer,
+        initialState,
+         composeEnhancers(
+            applyMiddleware(...middleware))
+    );
+}

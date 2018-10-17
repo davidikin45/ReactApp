@@ -5,7 +5,8 @@ import * as serviceWorker from './serviceWorker';
 
 import { Provider } from 'react-redux';
 import Conversion from './containers/Conversion'
-import store from'./store/configureStore';
+import configureStore from "./store/configureStore";
+const store = configureStore(window.__STATE__);
 
 ReactDOM.render(<Provider store={store}>
                     <Conversion />
