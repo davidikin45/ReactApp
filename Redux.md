@@ -12,7 +12,7 @@
 * Immutability
 * Makes state predictable
 * A thunk is a function that wraps an expression to delay it's execution.
-* [You Might Not Need Redux](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
+* You Might Not Need Redux](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
 
 ## Immutability (Merge or Copy)
 Clone and modify instead of mutating original
