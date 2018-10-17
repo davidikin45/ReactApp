@@ -12,8 +12,7 @@
 * Immutability
 * Makes state predictable
 * A thunk is a function that wraps an expression to delay it's execution.
-
-** You Might Not Need Redux(https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
+* [You Might Not Need Redux](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
 
 ## Immutability (Merge or Copy)
 Clone and modify instead of mutating original
@@ -508,8 +507,8 @@ export default connect((state, props) => {
 11. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) 
 
 ## Reducer Template
-[Immutable Update Patterns](https://redux.js.org/recipes/structuringreducers/immutableupdatepatterns)
-Try and keep reducer state flat and one level
+* [Immutable Update Patterns](https://redux.js.org/recipes/structuringreducers/immutableupdatepatterns)
+* Try and keep reducer state flat and one level
 ```
 var defaultState ={
 
