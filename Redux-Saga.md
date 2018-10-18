@@ -1,5 +1,7 @@
 # Getting Started with Redux Saga
 
+![alt text](redux-saga.jpg "Redux Saga")
+
 ## What is a Saga
 * A long-running background process
 * Responsible for application side effects
