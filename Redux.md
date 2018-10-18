@@ -12,7 +12,9 @@
 * Immutability
 * Makes state predictable
 * A thunk is a function that wraps an expression to delay it's execution.
-* You Might Not Need Redux](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
+* [You Might Not Need Redux](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
+* [react-router & react-router-dom (react-router-redux is depreciated)](https://github.com/ReactTraining/react-router)
+* [BrowserRouter](https://reacttraining.com/react-router/web/api/BrowserRouter)
 
 ## Immutability (Merge or Copy)
 Clone and modify instead of mutating original
@@ -137,13 +139,11 @@ npm install redux
 npm install react-redux
 npm install redux-logger
 npm install redux-immutable-state-invariant
-npm install redux-devtools-extension
 ```
 2. create a store/configureStore.js file and import from index.js
 ```
 import { applyMiddleware, createStore, compose  } from 'redux';
 import { createLogger } from 'redux-logger';
-import { composeWithDevTools } from 'redux-devtools-extension';
 
 var defaultState = {
     originAmount: '0.00'
@@ -176,6 +176,7 @@ function amountReducer(state = defaultState, action){
 }
 
 const middleware = [];
+const enhancers = [];
 
 if (process.env.NODE_ENV === 'development') {
     console.log('Running in Development Mode');
@@ -185,20 +186,21 @@ if (process.env.NODE_ENV === 'development') {
 
     const logger = createLogger({collapsed: true});
     middleware.push(logger);
+
+    if (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__) {
+        const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__();
+        enhancers.push(devToolsExtension);
+    }
 }
 
 export default function configureStore(initialState = {}) {
 
     //func1(func2(func3(func4))))
     //compose allows compose(func1, func2, func3, func4)
-    const composeEnhancers = composeWithDevTools({
-        // Specify name here, actionsBlacklist, actionsCreators and other options if needed
-    });
 
     return createStore(
         amountReducer,
-         composeEnhancers(
-            applyMiddleware(...middleware))
+        compose(applyMiddleware(...middleware), ...enhancers)
     );
 }
 ```
@@ -214,9 +216,27 @@ import App from './App'
 import configureStore from "./store/configureStore";
 const store = configureStore(window.__STATE__);
 
-ReactDOM.render(<Provider store={store}>
-                    <App />
-                </Provider>, document.getElementById('root'));
+const render = () => {
+    return ReactDOM.render(
+      <Provider store={store}>
+        <App />
+      </Provider>,
+      document.getElementById('root')
+    );
+  };
+
+  render();
+
+//HMR
+//https://medium.com/@brianhan/hot-reloading-cra-without-eject-b54af352c642
+//https://duske.me/setting-up-hot-module-replacement-with-create-react-app-and-redux/
+if (module.hot && process.env.NODE_ENV !== 'production') {
+    console.log('HMR Enabled for Components');
+    module.hot.accept('./App', () => {
+        console.log('HMR App');
+        render();
+      });
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
@@ -255,7 +275,7 @@ export default connect((state, props) =>{
 1. Install axios and redux thunk
 ```
 npm install axios lodash keymirror
-npm install redux react-redux redux-logger redux-axios-middleware react-router-redux redux-thunk redux-logger  redux-devtools-extension --save
+npm install redux react-redux redux-logger redux-axios-middleware react-router-redux redux-thunk redux-logger --save
 npm install redux-immutable-state-invariant --save-dev
 ```
 2. Create the following directories
@@ -269,7 +289,6 @@ npm install redux-immutable-state-invariant --save-dev
 import {createStore, applyMiddleware} from 'redux';
 import axios from 'axios';
 import axiosMiddleware from 'redux-axios-middleware';
-import { composeWithDevTools } from 'redux-devtools-extension';
 import { createLogger } from 'redux-logger';
 import thunk from 'redux-thunk';
 
@@ -282,6 +301,8 @@ const middleware = [
     axiosMiddleware(axios.create({baseURL:apiUrl}))
 ];
 
+const enhancers = [];
+
 if (process.env.NODE_ENV === 'development') {
     console.log('Running in Development Mode');
     
@@ -291,20 +312,31 @@ if (process.env.NODE_ENV === 'development') {
     //logger must be last
     const logger = createLogger({collapsed: true});
     middleware.push(logger);
+
+    //chrome redux dev tools
+    if (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__) {
+        const devToolsExtension = window.__REDUX_DEVTOOLS_EXTENSION__();
+        enhancers.push(devToolsExtension);
+    }
 }
 
 export default function configureStore(initialState = {}) {
-
-    const composeEnhancers = composeWithDevTools({
-        // Specify name here, actionsBlacklist, actionsCreators and other options if needed
-    });
-
-    return createStore(
+    const store = createStore(
         rootReducer,
         initialState,
-         composeEnhancers(
-            applyMiddleware(...middleware))
+        compose(applyMiddleware(...middleware), ...enhancers)
     );
+
+     //HMR
+      if (module.hot && process.env.NODE_ENV !== 'production') {
+          console.log('HMR Enabled for Reducers');
+          module.hot.accept('./reducers/index', () => {
+              console.log('HMR Reducers');
+              store.replaceReducer(rootReducer);
+          });
+      }       
+
+      return store;
 }
 ```
 4. Example action\speakers.js.
@@ -431,11 +463,27 @@ import { Provider } from 'react-redux';
 import configureStore from "./redux/configureStore";
 const store = configureStore(window.__STATE__);
 
-ReactDOM.render(
-    <Provider store={store}>
+const render = () => {
+    return ReactDOM.render(
+      <Provider store={store}>
         <App />
-    </Provider>, 
-    document.getElementById('root'));
+      </Provider>,
+      document.getElementById('root')
+    );
+  };
+
+  render();
+
+//HMR
+//https://medium.com/@brianhan/hot-reloading-cra-without-eject-b54af352c642
+//https://duske.me/setting-up-hot-module-replacement-with-create-react-app-and-redux/
+if (module.hot && process.env.NODE_ENV !== 'production') {
+    console.log('HMR Enabled for Components');
+    module.hot.accept('./App', () => {
+        console.log('HMR App');
+        render();
+      });
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

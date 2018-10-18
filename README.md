@@ -16,7 +16,7 @@ npm install npm@latest -g
 10. Install [Chrome React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)
 11. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) 
 
-## Creating a new App with create-react-react, npm and git repo
+## Creating a new App with create-react-react, npm, HMR and git repo
 1. To create a new app open a command line and use the [create-react-app](https://reactjs.org/docs/create-a-new-react-app.html#create-react-app) command where my-app is the name of the new app.
 ```
 npx create-react-app my-app --use-npm
@@ -59,6 +59,39 @@ App.css
 ```
 cd my-app
 npm run eject
+```
+9. To enable Hot Module Replace (Editing without refreshing app) edit the index.js
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+
+const render = () => {
+    return ReactDOM.render(
+       <App />,
+      document.getElementById('root')
+    );
+  };
+
+  render();
+
+//HMR
+//https://medium.com/@brianhan/hot-reloading-cra-without-eject-b54af352c642
+//https://duske.me/setting-up-hot-module-replacement-with-create-react-app-and-redux/
+if (module.hot && process.env.NODE_ENV !== 'production') {
+    console.log('HMR Enabled for Components');
+    module.hot.accept('./App', () => {
+        console.log('HMR App');
+        render();
+      });
+}
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: http://bit.ly/CRA-PWA
+serviceWorker.unregister();
 ```
 
 ## Progressive Web App
@@ -522,6 +555,42 @@ npm run startjsonserver
 * New concept around state and UI updates
 * State stored outside of components
 * Action 1 > 1 Dispatcher 1 > m Store  > 1 View
+
+## Hot Module Replace (Prevents refreshing when changes are made in development)
+* [Article 1](https://medium.com/@brianhan/hot-reloading-cra-without-eject-b54af352c642)
+* [Article 2](https://duske.me/setting-up-hot-module-replacement-with-create-react-app-and-redux/)
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+
+const render = () => {
+    return ReactDOM.render(
+       <App />,
+      document.getElementById('root')
+    );
+  };
+
+  render();
+
+//HMR
+//https://medium.com/@brianhan/hot-reloading-cra-without-eject-b54af352c642
+//https://duske.me/setting-up-hot-module-replacement-with-create-react-app-and-redux/
+if (module.hot && process.env.NODE_ENV !== 'production') {
+    console.log('HMR Enabled for Components');
+    module.hot.accept('./App', () => {
+        console.log('HMR App');
+        render();
+      });
+}
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: http://bit.ly/CRA-PWA
+serviceWorker.unregister();
+```
 
 ## New Projects with .NET Core
 * [dotnet new react -o my-new-app](https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/react?view=aspnetcore-2.1&tabs=visual-studio)
