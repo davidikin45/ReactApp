@@ -230,6 +230,7 @@ export default App;
 
 ## Useful things to know
 * function name(){ } is equivalent to ()=>{ }
+* you can use async/await rather promises .then()
 
 ## React Development Workflow
  JSX > Babel (react-scripts) > React JavaScript (react) > React Dom (react-dom) > Html
@@ -479,7 +480,7 @@ House.propTypes = {house: PropTypes.object.isRequired}
 npm test
 ```
 
-## React Api calls using axios
+## React Api calls using axios and promises
 1. Install axios
 ```
 npm install axios
@@ -509,6 +510,98 @@ if(error.response)
 5. Loop over collection
 ```
 {this.state.appData.map(item => ( <Component key={item.id} />))}
+```
+
+## React Api using axios and async/await rather than promises
+1. create a new app and install axios
+```
+npx create-react-app async-app --use-npm
+npm install axios
+```
+2. create an Api.js file
+```
+/**
+ * @ The external dependencies.
+ */
+import axios from 'axios';
+
+/**
+ * @ Setup api config.
+ */
+const client = axios.create({
+	baseURL: 'https://api.coinmarketcap.com/v1',
+});
+
+/**
+ * Class for api.
+ *
+ * @class Api (name)
+ */
+class Api {
+	constructor(client) {
+		this.client = client;
+	}
+
+	async getDataAsync() {
+		var response = await this.client.get('/ticker/?limit=10');
+		return response.data;
+	}
+
+	getData() {
+		return this.client
+			.get('/ticker/?limit=10')
+			.then(response => response.data);
+	}
+}
+
+export default new Api(client);
+```
+3. Replace App.js with the following
+```
+import React, { Component } from 'react';
+import './App.css';
+
+import api from './Api';
+
+class App extends Component {
+  constructor() {
+    super();
+    this.state = { data: [] };
+  }
+
+ async componentDidMount() {
+  try
+  {
+    var data = await api.getDataAsync();
+    this.setState({ data: data });
+  }
+  catch (error) {
+    console.log(error);
+  }
+ }
+ 
+/* componentDidMount()
+{
+  api.getData()
+  .then(data => this.setState({ data: data }));
+} */
+
+  render() {
+    return (
+      <div>
+        <ul>
+          {this.state.data.map(el => (
+            <li>
+              {el.name}: {el.price_usd}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
+
+export default App;
 ```
 
 ## Mocking Api with (json-server)[https://github.com/typicode/json-server]
