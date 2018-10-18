@@ -513,6 +513,7 @@ if(error.response)
 ```
 
 ## React Api using axios and async/await rather than promises
+* [6 Reasons Why JavaScript’s Async/Await Blows Promises Away](https://hackernoon.com/6-reasons-why-javascripts-async-await-blows-promises-away-tutorial-c7ec10518dd9)
 1. create a new app and install axios
 ```
 npx create-react-app async-app --use-npm
@@ -569,7 +570,7 @@ class App extends Component {
     this.state = { data: [] };
   }
 
- async componentDidMount() {
+async componentDidMount() {
   try
   {
     var data = await api.getDataAsync();
@@ -579,11 +580,19 @@ class App extends Component {
     console.log(error);
   }
  }
- 
+
 /* componentDidMount()
 {
   api.getData()
   .then(data => this.setState({ data: data }));
+} */
+
+ 
+/* componentDidMount()
+{
+  api.getDataAsync()
+  .then(data => this.setState({ data: data }))
+  .catch(error => console.log(error));
 } */
 
   render() {
