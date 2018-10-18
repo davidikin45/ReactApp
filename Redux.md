@@ -11,7 +11,7 @@
 * Action > Dispatcher > Store  > View
 * Immutability
 * Makes state predictable
-* A thunk is a function that wraps an expression to delay it's execution.
+* A thunk is a function that wraps an expression to delay it's execution. A delegate in .NET
 * [You Might Not Need Redux](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
 * [react-router & react-router-dom (react-router-redux is depreciated)](https://github.com/ReactTraining/react-router)
 * [BrowserRouter](https://reacttraining.com/react-router/web/api/BrowserRouter)
