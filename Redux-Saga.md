@@ -76,6 +76,7 @@ yield put("ACTION_NAME", value: 42);
 ### Call
 * Just like calling a method directly
 * Used for testing
+* Use instead of actually calling api
 ```
 let fn = () => {console.log("Called")}
 yield call(fn);
@@ -136,7 +137,7 @@ function* process(){
 * Combination of Fork, TakeEvery and Cancel
 * Forks child process each time action is dispatched, while keeping exactly one instance of the child process running.
 ```
-takeLatest("EVENT_NAME", process);
+yield takeLatest("EVENT_NAME", process);
 ```
 
 ### Select
@@ -146,6 +147,47 @@ takeLatest("EVENT_NAME", process);
 * Combines a number of take actions
 * Will only resume when all the actions have been dispatched.
 * Order does not matter
+
+## Channels
+* Action Channel = Buffers actions to be processed one at a time
+* Event Channel = Connects app to outside event sources. e.g web sockets
+* Channel = Communicate between two sagas. This can be done with regular actions but that means that all sagas see the information.
+
+### Action Channel (Queue)
+* Records all events of a specified type
+* Calling take accesses and removes the oldest record
+* Used to handle actions that would otherwise be lost 
+```
+const chan = yield actionChannel("EVENT_NAME");
+yield take(chan);
+```
+
+### Generic Channel
+* Special communication between two sagas
+* Action types not required. Implied they will be of a particular type.
+```
+let chan = yield channel();
+
+function* handleRequest(chan){
+    while(true)
+    {
+        let payload = yield effects.take(chan);
+        console.info("Got payload", payload);
+        yield delay(1000);
+    }
+}
+
+//Workers
+yield fork(handleRequest, chan);
+yield fork(handleRequest, chan);
+
+yield put(chan, {payload:42});
+```
+
+### Event Channels
+* Wraps outside source of events. e.g websockets
+* Takes outside events and map to redux-saga events
+
 
 ## Redux Thunk vs Saga
 | Thunk        | Saga                                                   |           
@@ -216,6 +258,7 @@ export default function configureStore(initialState = {}) {
 
       //HMR
       if (module.hot && process.env.NODE_ENV !== 'production') {
+          console.log('HMR enabled for reducers');
           module.hot.accept('./reducers/index', () => {
               console.log('HMR Reducers');
               store.replaceReducer(rootReducer);
@@ -389,6 +432,7 @@ const render = () => {
 //https://medium.com/@brianhan/hot-reloading-cra-without-eject-b54af352c642
 //https://duske.me/setting-up-hot-module-replacement-with-create-react-app-and-redux/
 if (module.hot && process.env.NODE_ENV !== 'production') {
+    console.log('HMR enabled for components');
     module.hot.accept('./App', () => {
         console.log('HMR App');
         render();
@@ -462,7 +506,7 @@ export default connect((state, props) => {
     }
 })(Conversion);
 ```
-11. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) 
+11. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
 
 ## PluralSight Courses
 * [Redux Saga](https://app.pluralsight.com/library/courses/redux-saga/table-of-contents)
