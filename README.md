@@ -38,6 +38,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 containers(Contain App.js and App.css. These are stateful classes. Access this.state and this.props. render() method. Has component Lifecycle events.)
 containers\views (Container pages such as home.js, about.js)
 components (Each should have .js and .css file and be stateless. Access only props. No render() method)
+hoc (High Order Components. See Error Boundary and Aux)
 assets\css
 assets\fonts
 assets\images
@@ -349,7 +350,7 @@ export default featuredHouse;
 ## Example Class Component (State Component)
 * Uppercase convention
 * A Component will update whenever state is set.
-* A PureComponent will only update if state has changed.
+* A PureComponent will only update if state has changed. It will prevent child components updating if evaluated to false.
 ```
 import React, { Component } from 'react';
 import '../../assets/css/App.css';
@@ -467,7 +468,10 @@ class UpdateScore extends Component {
 }
 
 UpdateScore.propTypes = {
-    conversionRate: PropTypes.number.isRequired
+    conversionRate: PropTypes.number.isRequired,
+    click: PropTypes.func,
+    name: PropTypes.string,
+    age: PropTypes.number
 }
 
 export default UpdateScore;
@@ -588,8 +592,8 @@ import classes from './App.css';
 ```
 <div className={classes.App}>
 ```
-
-## Error Boundary = High Order Component is a wrapper around code that is expected to fail
+## High Order Components = Wrapper
+### Error Boundary - wrapper around code that is expected to fail
 1. Create ErrorBoundary.js class
 ```
 import React, { Component } from 'react';
@@ -623,6 +627,101 @@ export default ErrorBoundary;
 import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 return <ErrorBoundary key={person.id}><Person/></ErrorBoundary>
+```
+### Aux = Html Wrapper
+```
+const aux = (props) => props.children;
+export default aux;
+```
+2. Use in a component
+```
+import Aux from '../hoc/Aux';
+return (
+<Aux>
+  <h1>Heading 1</h1>
+  <h1>Heading 2</h1>
+</Aux>);
+```
+
+### WithClass = Div Class Wrapper
+* upperCase contention
+```
+import React from 'react';
+const withClass = (props) =>(
+  <div className={props.classes}>
+    {props.children}
+    </div> 
+);
+export default withClass;
+```
+2. Use in a component
+```
+import WithClass from '../hoc/WithClass';
+return (
+<WithClass classes={classes.App}>
+  <h1>Heading 1</h1>
+  <h1>Heading 2</h1>
+</Aux>);
+```
+
+### WithClass v2 = Div Class Wrapper
+* lowercase contention
+```
+import React from 'react';
+const withClass = (WrappedComponent, className) =>(
+  return (props) =>(
+    <div className={className}>
+      <WrappedComponent {...props} />
+    </div>
+  )
+);
+export default withClass;
+```
+2. Use in a component
+```
+import withClass from '../hoc/withClass';
+import Aux from '../hoc/Aux';
+
+return (
+<Aux>
+  <h1>Heading 1</h1>
+  <h1>Heading 2</h1>
+</Aux>);
+
+export default withClass(App, classes.App);
+```
+
+### WithClass v3 Stateful = Div Class Wrapper
+* lowercase contention
+```
+import React, {Component} from 'react';
+const withClass = (WrappedComponent, className) => {
+  return class extends Component{
+    render(){
+       return ()(
+        <div className={className}>
+          <WrappedComponent {...this.props} />
+        </div>
+       )
+    }
+  }
+
+}
+
+export default withClass;
+```
+2. Use in a component
+```
+import withClass from '../hoc/withClass';
+import Aux from '../hoc/Aux';
+
+return (
+<Aux>
+  <h1>Heading 1</h1>
+  <h1>Heading 2</h1>
+</Aux>);
+
+export default withClass(App, classes.App);
 ```
 
 ## Testing with [Jest](https://jestjs.io/docs/en/tutorial-react.html)
