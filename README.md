@@ -271,6 +271,7 @@ const person = new Person();
 person.printMyName();
 person.printGender();
 ```
+* use {props.children} to render innerHtml
 
 ## React Development Workflow
  JSX > Babel (react-scripts) > React JavaScript (react) > React Dom (react-dom) > Html
@@ -310,6 +311,9 @@ Initialize state with state = {};
 
 ## Example Function Component (View Component)
 ```
+<Header>This is the children content</Header>
+```
+```
 import React from 'react';
 import logo from '../../assets/svg/logo.svg';
 
@@ -321,6 +325,7 @@ const Header = (props) => (
     <div className="col-md-7 mt-5 subtitle">
         Providing houses world wide
     </div>
+    {props.children}
  </header>
 );
 
