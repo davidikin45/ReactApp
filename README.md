@@ -35,32 +35,30 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 ```
 4. Create the following folders.
 ```
-views\application
-components
+containers(Contain App.js and App.css. These are stateful classes. Access this.state and this.props. render() method. Has component Lifecycle events.)
+containers\views (Container pages such as home.js, about.js)
+components (Each should have .js and .css file and be stateless. Access only props. No render() method)
 assets\css
 assets\fonts
 assets\images
 assets\svg
 ```
-5. Copy the following files into views\application. Update the index.js to import the App from /views/application.
+5. Copy the following files into containers. Update the index.js to import the App from containers.
 ```
 App.js
 App.test.js
+App.css
 ```
 6. Copy the following files into assets\svg. Update the App.js to import the logo from /assets/svg/.
 ```
 logo.svg
 ```
-7. Copy the following files into assets\css. Update the App.js to import the css from /assets/css/.
-```
-App.css
-```
-8. To generate the build scripts and config run the following commands. Alternatively will depend on react-scripts.
+7. To generate the build scripts and config run the following commands. Alternatively will depend on react-scripts.
 ```
 cd my-app
 npm run eject
 ```
-9. To enable Hot Module Replace (Editing without refreshing app) edit the index.js
+8. To enable Hot Module Replace (Editing without refreshing app) edit the index.js
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -93,6 +91,7 @@ if (module.hot && process.env.NODE_ENV !== 'production') {
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 ```
+9. See enabling css modules.
 
 ## Progressive Web App
 * By default the create-react-app creates a fully functional Progressive Web App which works offline by using the service worker. Great for occasionally connected devices without internet but may require extra coding.
@@ -317,7 +316,7 @@ Initialize state with state = {};
 import React from 'react';
 import logo from '../../assets/svg/logo.svg';
 
-const Header = (props) => (
+const header = (props) => (
  <header className="row">
     <div className="col-md-5">
         <img src={logo} className="logo" alt="logo" />
@@ -329,24 +328,28 @@ const Header = (props) => (
  </header>
 );
 
-export default Header; 
+export default header; 
 ```
 
 ## Simple React Snippet for Function Component
+* lowercase convention
 imr + tab = import React
 ```
 import React from 'react';
 ```
 sfc = stateless function component
 ```
-const FeaturedHouse = (props) => {
+const featuredHouse = (props) => {
     return (  );
 }
  
-export default FeaturedHouse;
+export default featuredHouse;
 ```
 
 ## Example Class Component (State Component)
+* Uppercase convention
+* A Component will update whenever state is set.
+* A PureComponent will only update if state has changed.
 ```
 import React, { Component } from 'react';
 import '../../assets/css/App.css';
@@ -487,20 +490,20 @@ class House extends Component {
 export default House;
 ```
 
-## Lifecycle Methods Mounting
-```
-constructor()
-render()
-componentDidMount() //Called immediately after first render once 
-```
+## Lifecycle Methods Creating
+1. constructor(props)
+2. componentWillMount()
+3. render()
+4. renderChildComponents
+5. componentDidMount() //Called immediately after first render once.
 
 ## Lifecycle Methods Updating
-```
-getDerivedStateFromProps()
-shouldComponentUpdate()
-render()
-componentDidUpdate()
-```
+1. componentWillReceiveProps(nextProps) - Only if updated externally
+2. shouldComponentUpdate(nextProps, nextState)
+3. componentWillUpdate(nextProps, nextState)
+4. render()
+5. updateChildComponentProps
+6. componentDidUpdate()
 
 ## Lifecycle Methods Unmount
 ```
@@ -517,6 +520,109 @@ componentDidCatch()
 npm install --save prop-types
 import PropTypes from 'prop-types';
 House.propTypes = {house: PropTypes.object.isRequired}
+```
+
+## Radium CSS - Inline css Pseudo selectors (:hover) and media queries
+*  Scoped Css modules
+1. install radium
+```
+npm install radium
+```
+2. import the following int components
+```
+import Radium from 'radium';
+
+const style = {
+  ':hover':{
+    backgroundColor: 'lightgreen'
+    color: 'black'
+  }
+  '@media (min-width: 500px)' :{
+
+  }
+}
+```
+3. Add to an element
+```
+<div style={style}>
+```
+4. When exporting component use the following syntax
+```
+export default Radium(person);
+```
+5. To use media queries need to wrap App with StyleRoot
+```
+<StyleRoot>
+  <App/>
+</StyleRoot>
+```
+
+## Scoped Css modules
+1. First must eject
+```
+npm run eject
+```
+2. Open webpack.config.dev and edit the options under loader: require.resolve('css-loader')
+```
+options :{
+  importLoaders: 1,
+  modules: true,
+  localIdentName: '[name]__[local]__[hash:base64:5]'
+}
+```
+3. Open webpack.config.prod and edit the options under loader: require.resolve('css-loader')
+```
+options :{
+  importLoaders: 1,
+  modules: true,
+  localIdentName: '[name]__[local]__[hash:base64:5]',
+  minimize: true,
+  sourceMap : shouldUseSourceMap
+}
+```
+4. Import classes instead of the whole css file
+```
+import classes from './App.css';
+```
+5. Assign property of classes
+```
+<div className={classes.App}>
+```
+
+## Error Boundary = High Order Component is a wrapper around code that is expected to fail
+1. Create ErrorBoundary.js class
+```
+import React, { Component } from 'react';
+
+class ErrorBoundary extends Component{
+  state ={
+    hasError: false,
+    errorMessageL ''
+  }
+
+  componentDidCatch = (error, info) =>{
+    this.setState({hasError: true, errorMessage: error});
+  }
+
+  render(){
+    if(this.state.hasError)
+    {
+      return <h1>{this.state.errorMessage}</h1>;
+    }
+    else
+    {
+      return this.props.children;
+    }
+  }
+}
+
+export default ErrorBoundary;
+```
+2. Use in a component
+```
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
+
+return <ErrorBoundary key={person.id}><Person/></ErrorBoundary>
 ```
 
 ## Testing with [Jest](https://jestjs.io/docs/en/tutorial-react.html)
