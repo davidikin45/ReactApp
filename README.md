@@ -229,8 +229,48 @@ export default App;
 ```
 
 ## Useful things to know
-* function name(){ } is equivalent to ()=>{ }
+* function name(arg){ } is equivalent to const name = (arg) =>{ } or  const name = arg =>{ }
 * you can use async/await rather promises .then()
+* Use let/const and not var
+* destructuring pulls out the specified value
+```
+{name} = {name:'Max', age:28}
+
+const numbers = [1, 2, ,3];
+[num1, num3] = numbers;
+```
+* ... = splits up array elements OR object properties
+* copy object or array by using const copy = {...original};
+* map array function = foreach & return
+```
+const numbers = [1, 2, 3];
+const newArray = numbers.map((item) => {return item * 2;});
+```
+* function sortArgs(...args) {return args.sort() } allows for an unlimited amount of arguements to be merged into an array. Similar to .NET params
+* export default Person > import name from './person' or import prs from './person'
+* export const Person > import { Person } from './person' or import { Person as p } from './person' or import * as bundled from './person'
+```
+class Human{
+  gender = 'male';
+}
+
+printGender = () =>{
+  console.log(this.gender);
+}
+
+class Person extends Human {
+  name = 'Max';
+  gender = 'female';
+
+  printMyName = () => {
+    console.log(this.name);
+  }
+}
+
+const person = new Person();
+person.printMyName();
+person.printGender();
+```
 
 ## React Development Workflow
  JSX > Babel (react-scripts) > React JavaScript (react) > React Dom (react-dom) > Html
