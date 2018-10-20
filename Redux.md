@@ -39,7 +39,7 @@ history.push(state, state2);
 ## Redux Process
 1. Dispatch Action
 ```
-this.props.dispatch({type:"CHANGE_ORIGIN_AMOUNT", data:{}})
+this.props.dispatch({type:"CHANGE_ORIGIN_AMOUNT", payload:{}})
 ```
 2. Client and update store state using Reducer
 ```
@@ -123,7 +123,7 @@ store.subscribe(function(){
     console.log('state', store.getState());
 })
 
-store.dispatch({type:'CHANGE_ORIGIN_AMOUNT', data: '300.65' });
+store.dispatch({type:'CHANGE_ORIGIN_AMOUNT', payload: '300.65' });
 store.dispatch({type:''});
 store.dispatch({type:''});
 
@@ -131,7 +131,7 @@ export default store;
 ```
 
 ## React-Redux Example
-* Dispatch actions using this.props.dispatch({type:"CHANGE_ORIGIN_AMOUNT", data:{}})
+* Dispatch actions using this.props.dispatch({type:"CHANGE_ORIGIN_AMOUNT", payload:{}})
 1. Create new app and install redux
 ```
 npm create-react-app my-app --use-npm
@@ -339,24 +339,27 @@ export default function configureStore(initialState = {}) {
       return store;
 }
 ```
-4. Example action\speakers.js.
+4. Example \store\actions\speakers.js.
 The event payloads are stored in a seperate file.
 ```
 import axios from 'axios';
 import debounce from 'lodash.debounce';
-
-export const SPEAKER_LOAD = 'SPEAKER_LOAD';
-export const SPEAKER_LOAD_SUCCESS = 'SPEAKER_LOAD_SUCCESS';
-export const SPEAKER_LOAD_FAIL = 'SPEAKER_LOAD_FAIL';
+import * as actionTypes from './actionTypes';
 
 export function speakersFetchData() {
     return {
-        type: SPEAKER_LOAD,
+        type: actionTypes.SPEAKER_LOAD,
         payload: {
             request:{
                 url:'/data/speakers.json'
             } 
         }
+    }
+}
+
+export const decrement = () =>{
+    return {
+        type: actionTypes.DECREMENT
     }
 }
 
@@ -369,7 +372,7 @@ export function fetchConversionRate(payload)
 
 function _makeConversionAjaxCall(payload, dispatch)
 {
-    dispatch({type:"REQUEST_CONVERSION_RATE", data: payload});
+    dispatch({type:actionTypes.REQUEST_CONVERSION_RATE, payload: payload});
 
             // ajax call for destination amount
         // originCurrency, destCurrency, originAmount
@@ -377,30 +380,47 @@ function _makeConversionAjaxCall(payload, dispatch)
             params: payload
         })
         .then((resp) => {
-            dispatch({type:"RECEIVED_CONVERSION_RATE_SUCCESS", data: resp.data});
+            dispatch({type:actionTypes.RECEIVED_CONVERSION_RATE_SUCCESS, payload: resp.data});
         })
         .catch((err)=>{
-            dispatch({type:"RECEIVED_CONVERSION_RATE_FAILURE", data: err});
+            dispatch({type:actionTypes.RECEIVED_CONVERSION_RATE_FAILURE, payload: err});
         });
 }
 
 //debounce waits a specified period before sending request
 var makeConversionAjaxCall = debounce(_makeConversionAjaxCall, 300);
 ```
-5. It is often a good idea to extract the action constants into another file named actionTypes.js
+5. Create a \store\actions\index.js
+```
+export {
+    speakersFetchData,
+    decrement,
+    fetchConversionRate
+} from './speakers'
+
+export {
+    action1,
+    action2
+} from './sessions'
+```
+6. It is often a good idea to extract the action constants into another file named actionTypes.js
 ```
 import keyMirror from 'keymirror';
 
 export var ActionTypes = keyMirror({
-    CHANGE_ORIGIN_AMOUNT: null
+    CHANGE_ORIGIN_AMOUNT: null,
+    SPEAKER_LOAD: null,
+    REQUEST_CONVERSION_RATE: null,
+    RECEIVED_CONVERSION_RATE_SUCCESS: null,
+    RECEIVED_CONVERSION_RATE_FAILURE: null
 })
 ```
 They can then be imported and used in the reducer and actions file using the following:
 ```
-import { ActionTypes as types } from './actionTypes';
-types.CHANGE_ORIGIN_AMOUNT
+import * as actionTypes from './actionTypes';
+actionTypes.CHANGE_ORIGIN_AMOUNT
 ```
-6. Example reducers\speakers.js
+7. Example reducers\speakers.js
 ```
 import {SPEAKER_LOAD, SPEAKER_LOAD_FAIL, SPEAKER_LOAD_SUCCESS} from "../actions/speakers";
 
@@ -442,7 +462,7 @@ export function speakers(state = defaultState, action) {
     }
 }
 ```
-7. Create a reducers\index.js file and put in the following contents. React expects one reducer.
+8. Create a reducers\index.js file and put in the following contents. React expects one reducer.
 ```
 import { combineReducers } from 'redux';
 import { speakers } from './speakers';
@@ -451,7 +471,7 @@ export default combineReducers({
     speakers : speakers
 })
 ```
-8. update index.js to include the Provider element
+9. update index.js to include the Provider element
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -490,7 +510,7 @@ if (module.hot && process.env.NODE_ENV !== 'production') {
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 ```
-9. Dispatching action in a component
+10. Dispatching action in a component
 ```
 import React, {Component} from 'react';
 
@@ -540,7 +560,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,{speakersFetchData})(SpeakersRedux)
 ```
-10. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
+11. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
 ```
 export default connect((state, props) => {
     return {
@@ -552,7 +572,7 @@ export default connect((state, props) => {
     }
 })(Conversion);
 ```
-11. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) 
+12. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) 
 
 ## Reducer Template
 * [Immutable Update Patterns](https://redux.js.org/recipes/structuringreducers/immutableupdatepatterns)

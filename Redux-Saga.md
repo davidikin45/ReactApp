@@ -202,18 +202,21 @@ yield put(chan, {payload:42});
 
 ## Redux Saga
 * Dispatch functions using this.props.dispatch(function(dispatch){})
+* If export default connect(mapStateToProps,{speakersFetchData})(SpeakersRedux) the following syntax can be used, this.props.speakersFetchData()
+* [redux-actions](https://redux-actions.js.org/) can be used to easily create and handle actions
 1. Install redux saga
 ```
 npm install lodash keymirror
 npm install redux react-redux redux-logger react-router-redux redux-saga redux-logger redux-devtools-extension --save
 npm install redux-immutable-state-invariant --save-dev
+npm install redux-actions
 ```
 2. Create the following directories
 ```
 \store
 \store\reducers
 \store\actions
-\sagas
+\store\sagas
 ```
 3. Create a store\configureStore.js file and put in the following contents.
 ```
@@ -271,7 +274,7 @@ export default function configureStore(initialState = {}) {
     return store;
 }
 ```
-4. Create a sagas\initSagas.js and put in the following contents.
+4. Create a store\sagas\initSagas.js and put in the following contents.
 ```
 import * as sagas from './sagas';
 
@@ -279,7 +282,7 @@ export const initSagas = (sagaMiddleware) => {
     Object.values(sagas).forEach(sagaMiddleware.run.bind(sagaMiddleware));
 }
 ```
-5. Example sagas\createUserSaga.js
+5. Example store\sagas\createUserSaga.js
 ```
 import {delay} from 'redux-saga';
 
@@ -291,19 +294,15 @@ export function* currentUserSaga(){
     }
 }
 ```
-6. Create a sagas\index.js file and put in the following contents.
+6. Create a store\sagas\index.js file and put in the following contents.
 ```
 export{ currentUserSaga } from './createUserSaga'
 ```
-4. Example action\speakers.js.
-The event payloads are stored in a seperate file.
+7. Example store\actions\speakers.js.
+* The event payloads are stored in a seperate file.
+* An alternative to creating the payloads is using [redux-actions](https://github.com/redux-utilities/redux-actions)
 ```
-import axios from 'axios';
-import debounce from 'lodash.debounce';
-
-export const SPEAKER_LOAD = 'SPEAKER_LOAD';
-export const SPEAKER_LOAD_SUCCESS = 'SPEAKER_LOAD_SUCCESS';
-export const SPEAKER_LOAD_FAIL = 'SPEAKER_LOAD_FAIL';
+import * as actionTypes from './actionTypes'
 
 export function speakersFetchData() {
     return {
@@ -315,35 +314,8 @@ export function speakersFetchData() {
         }
     }
 }
-
-export function fetchConversionRate(payload)
-{
-    return (dispatch) => {
-        makeConversionAjaxCall(payload, dispatch);
-    };
-}
-
-function _makeConversionAjaxCall(payload, dispatch)
-{
-    dispatch({type:"REQUEST_CONVERSION_RATE", data: payload});
-
-            // ajax call for destination amount
-        // originCurrency, destCurrency, originAmount
-        axios.get('/api/conversion', {
-            params: payload
-        })
-        .then((resp) => {
-            dispatch({type:"RECEIVED_CONVERSION_RATE_SUCCESS", data: resp.data});
-        })
-        .catch((err)=>{
-            dispatch({type:"RECEIVED_CONVERSION_RATE_FAILURE", data: err});
-        });
-}
-
-//debounce waits a specified period before sending request
-var makeConversionAjaxCall = debounce(_makeConversionAjaxCall, 300);
 ```
-5. It is often a good idea to extract the action constants into another file named actionTypes.js
+8. It is often a good idea to extract the action constants into another file named actionTypes.js
 ```
 import keyMirror from 'keymirror';
 
@@ -351,12 +323,25 @@ export var ActionTypes = keyMirror({
     CHANGE_ORIGIN_AMOUNT: null
 })
 ```
-They can then be imported and used in the reducer and actions file using the following:
+They can then be imported and used in the reducer, actions and saga files using the following:
 ```
-import { ActionTypes as types } from './actionTypes';
-types.CHANGE_ORIGIN_AMOUNT
+import * as actionTypes from './actionTypes';
+actionTypes.CHANGE_ORIGIN_AMOUNT
 ```
-6. Example reducers\speakers.js
+9. Create a \store\actions\index.js
+```
+export {
+    speakersFetchData,
+    decrement,
+    fetchConversionRate
+} from './speakers'
+
+export {
+    action1,
+    action2
+} from './sessions'
+```
+10. Example reducers\speakers.js
 ```
 import {SPEAKER_LOAD, SPEAKER_LOAD_FAIL, SPEAKER_LOAD_SUCCESS} from "../actions/speakers";
 
@@ -398,7 +383,7 @@ export function speakers(state = defaultState, action) {
     }
 }
 ```
-7. Create a reducers\index.js file and put in the following contents. React expects one reducer.
+11. Create a reducers\index.js file and put in the following contents. React expects one reducer.
 ```
 import { combineReducers } from 'redux';
 import { speakers } from './speakers';
@@ -407,7 +392,7 @@ export default combineReducers({
     speakers : speakers
 })
 ```
-8. update index.js to include the Provider element
+12. update index.js to include the Provider element
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -446,7 +431,7 @@ if (module.hot && process.env.NODE_ENV !== 'production') {
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 ```
-9. Dispatching action in a component
+13. Dispatching action in a component
 ```
 import React, {Component} from 'react';
 
@@ -496,7 +481,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,{speakersFetchData})(SpeakersRedux)
 ```
-10. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
+14. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
 ```
 export default connect((state, props) => {
     return {
@@ -508,7 +493,7 @@ export default connect((state, props) => {
     }
 })(Conversion);
 ```
-11. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
+15. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
 
 ## PluralSight Courses
 * [Redux Saga](https://app.pluralsight.com/library/courses/redux-saga/table-of-contents)
