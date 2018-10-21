@@ -495,6 +495,59 @@ export default connect((state, props) => {
 ```
 15. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
 
+## Saga Template
+```
+import {
+	all,
+	put,
+	call,
+	takeLatest,
+	select
+} from 'redux-saga/effects';
+
+import * as action from './actions';
+import * as requestActions from 'store/state/requests/actions';
+import api from './api';
+
+export default function* worker1(action) {
+    try
+    {
+        yield put(requestActions.RequestStarted(action.type));
+        var payload= {};
+        var response = yield call([api,"methodName"], payload);
+        yield put(actions.DataReceived(response));
+        yield put(requestActions.EndRequest(action.type));
+    }
+    catch
+    {
+         yield put(requestActions.EndRequestWithError(action.type));
+    }
+}
+
+
+export default function* worker2(action) {
+    try
+    {
+        yield put(requestActions.RequestStarted(action.type));
+        var payload= {};
+        var response = yield call([api,"methodName"], payload);
+        yield put(actions.DataReceived(response));
+        yield put(requestActions.EndRequest(action.type));
+    }
+    catch
+    {
+         yield put(requestActions.EndRequestWithError(action.type));
+    }
+}
+
+export default function* foreman() {
+	yield all([
+		takeLatest(actions.action1, worker1),
+        takeLatest(actions.action2, worker2),
+	]);
+}
+```
+
 ## PluralSight Courses
 * [Redux Saga](https://app.pluralsight.com/library/courses/redux-saga/table-of-contents)
 
