@@ -229,6 +229,7 @@ export default App;
 ```
 
 ## Useful things to know
+* this.props.history.push('/page'); changes routes.
 * function name(arg){ } is equivalent to const name = (arg) =>{ } or  const name = arg =>{ }
 * you can use async/await rather promises .then()
 * Use let/const and not var
