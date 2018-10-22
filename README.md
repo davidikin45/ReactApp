@@ -527,72 +527,29 @@ import PropTypes from 'prop-types';
 House.propTypes = {house: PropTypes.object.isRequired}
 ```
 
-## Radium CSS - Inline css Pseudo selectors (:hover) and media queries
-*  Scoped Css modules
-1. install radium
+## Css as Javascript object
 ```
-npm install radium
-```
-2. import the following int components
-```
-import Radium from 'radium';
+const style={
+  backgroundColor: '#202020';
+  padding: '12px',
+  borderRadis: '2px'
+};
 
-const style = {
-  ':hover':{
-    backgroundColor: 'lightgreen'
-    color: 'black'
-  }
-  '@media (min-width: 500px)' :{
-
-  }
-}
-```
-3. Add to an element
-```
 <div style={style}>
-```
-4. When exporting component use the following syntax
-```
-export default Radium(person);
-```
-5. To use media queries need to wrap App with StyleRoot
-```
-<StyleRoot>
-  <App/>
-</StyleRoot>
 ```
 
 ## Scoped Css modules
-1. First must eject
+1. No longer need to eject
 ```
-npm run eject
+2. Import classes instead of the whole css file by naming css file *.module.css
 ```
-2. Open webpack.config.dev and edit the options under loader: require.resolve('css-loader')
+import classes from './App.module.css';
 ```
-options :{
-  importLoaders: 1,
-  modules: true,
-  localIdentName: '[name]__[local]__[hash:base64:5]'
-}
-```
-3. Open webpack.config.prod and edit the options under loader: require.resolve('css-loader')
-```
-options :{
-  importLoaders: 1,
-  modules: true,
-  localIdentName: '[name]__[local]__[hash:base64:5]',
-  minimize: true,
-  sourceMap : shouldUseSourceMap
-}
-```
-4. Import classes instead of the whole css file
-```
-import classes from './App.css';
-```
-5. Assign property of classes
+3. Assign property of classes
 ```
 <div className={classes.App}>
 ```
+
 ## High Order Components = Wrapper
 ### Error Boundary - wrapper around code that is expected to fail
 1. Create ErrorBoundary.js class

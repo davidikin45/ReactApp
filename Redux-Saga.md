@@ -210,6 +210,8 @@ npm install lodash keymirror
 npm install redux react-redux redux-logger react-router-redux redux-saga redux-logger redux-devtools-extension --save
 npm install redux-immutable-state-invariant --save-dev
 npm install redux-actions
+npm install reselect
+npm install prop-types
 ```
 2. Create the following directories
 ```
@@ -441,6 +443,8 @@ import SpeakerList from './SpeakerList';
 import { connect } from 'react-redux';
 import { speakersFetchData } from "../../redux/actions/speakers"
 
+import {totalSelector} from 'path/to/selector'
+
 class SpeakersRedux extends Component {
     state = {
         isLoading: true,
@@ -470,18 +474,43 @@ class SpeakersRedux extends Component {
     }
 } 
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
     return{
         speakers: state.speakers.data,
         hasErrored: state.speakers.hasErrored,
         isLoading: state.speakers.isLoading,
-        errorMessage: state.speakers.errorMessage
+        errorMessage: state.speakers.errorMessage,
+		inventoryValue: totalSelector(state)
     };
 };
 
 export default connect(mapStateToProps,{speakersFetchData})(SpeakersRedux)
 ```
-14. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
+14. Creating Selectors can be useful for mapping state to props
+```
+import { createSelector } from 'reselect'
+
+const shopItemsSelector = state => state.shop.items
+const taxPercentSelector = state => state.shop.taxPercent
+
+const subtotalSelector = createSelector(
+  shopItemsSelector,
+  items => items.reduce((acc, item) => acc + item.value, 0)
+)
+
+const taxSelector = createSelector(
+  subtotalSelector,
+  taxPercentSelector,
+  (subtotal, taxPercent) => subtotal * (taxPercent / 100)
+)
+
+export const totalSelector = createSelector(
+  subtotalSelector,
+  taxSelector,
+  (subtotal, tax) => ({ total: subtotal + tax })
+)
+```
+15. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
 ```
 export default connect((state, props) => {
     return {
@@ -493,7 +522,7 @@ export default connect((state, props) => {
     }
 })(Conversion);
 ```
-15. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
+16. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
 
 ## Saga Template
 ```
@@ -547,6 +576,10 @@ export default function* foreman() {
 	]);
 }
 ```
+## Selectors
+* [What are selectors?](https://medium.com/@pearlmcphee/selectors-react-redux-reselect-9ab984688dd4)
+* Selectors encapsulate knowledge of where data lives and how to derive it, and therefore can help you write more reusable code.
+
 
 ## PluralSight Courses
 * [Redux Saga](https://app.pluralsight.com/library/courses/redux-saga/table-of-contents)
