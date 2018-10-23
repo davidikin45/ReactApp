@@ -1,5 +1,8 @@
 # Getting Started with React
 
+## Designing an App
+* [See Designing a React App](Design.md)
+
 ## Setting up Environment
 1. [Download and install Visual Studio Code](https://code.visualstudio.com/)
 2. [Download and install Node.js](https://nodejs.org/en/download/)
