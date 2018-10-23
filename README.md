@@ -374,6 +374,7 @@ class App extends Component {
     })
   }
 
+  
   determineFeaturedHouse = () => {
     if (this.allHouses) {
       const randomIndex = Math.floor(Math.random() * this.allHouses.length);
@@ -402,10 +403,12 @@ class Score extends React.Component {
 		this.state = {score:0};
 		
 		//make 'this' available in click handlers
+		//use arrow functions instead of bind
+		
 		this.incrementScore = this.incrementScore.bind(this);
-    this.decrementScore = this.decrementScore.bind(this);
+		this.decrementScore = this.decrementScore.bind(this);
     
-    this.handleChange = this.handleChange.bind(this);
+		this.handleChange = this.handleChange.bind(this);
 	}
 	
   componentDidMount(){
@@ -413,6 +416,12 @@ class Score extends React.Component {
   }
   
 	incrementScore(){
+		this.setState(
+		{ score: this.state.score + 1 }
+		);
+	}	
+	
+	incrementScore2 = (val) => {
 		this.setState(
 		{ score: this.state.score + 1 }
 		);
@@ -439,6 +448,7 @@ class Score extends React.Component {
 		Score: {this.state.score}<br/>
     <input value={this.state.value} onChange={this.handleChange} />
 		<button onClick={this.incrementScore}>+</button>
+		<button onClick={() => this.incrementScore2(2)}>+2</button>
 		<button onClick={this.decrementScore}>-</button>
     {this.state.value}
 		</div>
@@ -687,6 +697,12 @@ export default withClass(App, classes.App);
 ```
 npm test
 ```
+## Firebase - Backend without coding
+* [Firebase](https://firebase.google.com/)
+![alt text](firebase.jpg "Firebase")
+1. Create a 'Realtime Database'
+2. Start in test mode
+3. Post to https://react-my-burger-b0ffe.firebaseio.com/{object}.json
 
 ## React Api calls using axios and promises
 1. Install axios

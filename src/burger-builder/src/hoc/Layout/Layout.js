@@ -8,7 +8,7 @@ import SideMenu from '../../components/Navigation/SideMenu/SideMenu'
 
 class Layout extends Component {
     state = {
-        showSideMenu: true
+        showSideMenu: false
     }
     
     sideMenuClosedHandler = () => {
@@ -25,7 +25,7 @@ class Layout extends Component {
     render()
     {
         return (
-            <Aux>
+        <Aux>
             <Toolbar sideMenuToggleClicked={this.sideMenuToggleHandler}  />
             <SideMenu open={this.state.showSideMenu} closed={this.sideMenuClosedHandler}  />
             <main className={classes.Content}>

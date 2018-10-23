@@ -23,6 +23,25 @@ body {
 }
 ```
 
+## Spinners
+* [Spinners](https://projects.lukehaas.me/css-loaders/)
+1. Choose background and foreground color.
+2. copy css into a Spinner.module.css
+3. Copy html into component and import css
+```
+import React from 'react';
+
+import classes from './Spinner.module.css';
+
+const spinner = () => {
+    return ( 
+        <div className={classes.Loader}>Loading...</div>
+     );
+}
+ 
+export default spinner;
+```
+
 ## Authors
 
 * **David Ikin**
