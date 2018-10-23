@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
-import api from '../../api';
+import api from '../../../api';
 
-import Post from '../../components/Post/Post';
-import FullPost from '../../components/FullPost/FullPost';
-import NewPost from '../../components/NewPost/NewPost';
-import './Blog.css';
+import Post from '../../../components/Post/Post';
+import './Posts.css';
 
-class Blog extends Component {
+class Posts extends Component {
     state={
-        posts: [],
-        selectedPostId: null,
-        error: false
+        posts: []
     }
+
     async componentDidMount(){
         try
         {
@@ -25,7 +22,6 @@ class Blog extends Component {
         catch(err)
         {
             console.log(err);
-            this.setState({error: true});
         }
     }
 
@@ -33,7 +29,7 @@ class Blog extends Component {
         this.setState({selectedPostId: id});
     }
 
-    render () {
+    render() { 
         let posts = <p style={{textAlign:'center'}}>Something went wrong!</p>
         if(!this.state.error)
         {
@@ -45,19 +41,11 @@ class Blog extends Component {
             });
         }
         return (
-            <div>
-                <section className="Posts">
-                   {posts}
-                </section>
-                <section>
-                    <FullPost id={this.state.selectedPostId} />
-                </section>
-                <section>
-                    <NewPost />
-                </section>
-            </div>
-        );
+        <section className="Posts">
+            {posts}
+         </section>
+          );
     }
 }
-
-export default Blog;
+ 
+export default Posts;

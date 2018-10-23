@@ -28,7 +28,7 @@ npx create-react-app my-app --use-npm
 ```
 npm install bootstrap@4
 npm install prop-types
-npm install react-router-dom
+npm install react-router react-router-dom
 npm install axios
 npm install lodash
 ```
@@ -232,7 +232,14 @@ export default App;
 ```
 
 ## Useful things to know
-* this.props.history.push('/page'); changes routes.
+* this.props.history.push('/page'); changes routes. Can only access in container components.
+* In stateless components use import {withRouter} from 'react-router-dom'; and export default withRouter(post);
+* By default link will always go to absolute path. for exampe a page example.com/abc would go to example.com/new-post and not example.com/abc/new-post.
+```
+import {Route, Link} from 'react-router-dom';
+<Link to="/new-post">New Post</Link>
+<Link to={{pathname:this.props.match.url + '/new-post'}}>New Post</Link>
+```
 * function name(arg){ } is equivalent to const name = (arg) =>{ } or  const name = arg =>{ }
 * you can use async/await rather promises .then()
 * Use let/const and not var

@@ -7,7 +7,6 @@ const api = axios.create({
 api.defaults.headers.common['Authorization'] = 'AUTH TOKEN FROM INSTANCE';
 
 api.interceptors.request.use(request =>{
-    console.log(request);
     //Edit request config
     return request;
 }, error =>{
@@ -16,7 +15,6 @@ api.interceptors.request.use(request =>{
 })
 
 api.interceptors.request.use(response =>{
-    console.log(response);
     //Edit request config
     return response;
 }, error =>{
