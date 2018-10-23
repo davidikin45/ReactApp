@@ -719,6 +719,34 @@ if(error.response)
 ```
 {this.state.appData.map(item => ( <Component key={item.id} />))}
 ```
+## React Api using global axios
+1. Add the following code to index.js
+```
+import axios from 'axios';
+
+axios.defaults.baseURL = 'https://jsonplaceholder.typicode.com';
+axios.defaults.headers.common['Authorization'] = 'AUTH TOKEN';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
+
+axios.interceptors.request.use(request =>{
+    console.log(request);
+    //Edit request config
+    return request;
+}, error =>{
+    console.log(error);
+    return Promise.reject(error);
+})
+
+axios.interceptors.request.use(response =>{
+    console.log(response);
+    //Edit request config
+    return response;
+}, error =>{
+    //sending error
+    console.log(error);
+    return Promise.reject(error);
+})
+```
 
 ## React Api using axios and async/await rather than promises
 * [6 Reasons Why JavaScript’s Async/Await Blows Promises Away](https://hackernoon.com/6-reasons-why-javascripts-async-await-blows-promises-away-tutorial-c7ec10518dd9)
@@ -740,6 +768,27 @@ import axios from 'axios';
 const client = axios.create({
 	baseURL: 'https://api.coinmarketcap.com/v1',
 });
+
+client.defaults.headers.common['Authorization'] = 'AUTH TOKEN FROM INSTANCE';
+
+client.interceptors.request.use(request =>{
+    console.log(request);
+    //Edit request config
+    return request;
+}, error =>{
+    console.log(error);
+    return Promise.reject(error);
+})
+
+client.interceptors.request.use(response =>{
+    console.log(response);
+    //Edit request config
+    return response;
+}, error =>{
+    //sending error
+    console.log(error);
+    return Promise.reject(error);
+})
 
 /**
  * Class for api.
