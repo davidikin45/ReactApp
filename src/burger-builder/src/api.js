@@ -18,6 +18,11 @@ class Api {
 		var response = await this.client.post('/orders.json', payload);
 		return response.data;
 	}
+
+	async getOrders() {
+		var response = await this.client.get('/orders.json');
+		return response.data;
+	}
 }
 
 export default new Api(client);
