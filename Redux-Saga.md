@@ -222,15 +222,13 @@ npm install prop-types
 ```
 3. Create a store\configureStore.js file and put in the following contents.
 ```
-import {createStore, applyMiddleware} from 'redux';
+import {createStore, applyMiddleware, compose} from 'redux';
 import { createLogger } from 'redux-logger';
 
 import createSagaMiddleware from 'redux-saga';
 import {initSagas} from './sagas/initSagas';
 
-import rootReducer from './reducers/index';
-
-const apiUrl = 'http://localhost:4000/api';
+import rootReducer from './combineReducers';
 
 const sagaMiddleware = createSagaMiddleware();
 const middleware = [
@@ -266,7 +264,7 @@ export default function configureStore(initialState = {}) {
       //HMR
       if (module.hot && process.env.NODE_ENV !== 'production') {
           console.log('HMR enabled for reducers');
-          module.hot.accept('./reducers/index', () => {
+          module.hot.accept('./combineReducers', () => {
               console.log('HMR Reducers');
               store.replaceReducer(rootReducer);
           });
@@ -327,10 +325,10 @@ export var ActionTypes = keyMirror({
 ```
 They can then be imported and used in the reducer, actions and saga files using the following:
 ```
-import * as actionTypes from './actionTypes';
+import actionTypes from './actionTypes';
 actionTypes.CHANGE_ORIGIN_AMOUNT
 ```
-9. Create a \store\actions\index.js
+9. Create a \store\actions.js
 ```
 export {
     speakersFetchData,
@@ -345,7 +343,7 @@ export {
 ```
 10. Example reducers\speakers.js
 ```
-import {SPEAKER_LOAD, SPEAKER_LOAD_FAIL, SPEAKER_LOAD_SUCCESS} from "../actions/speakers";
+import actionTypes from '../actionTypes';
 
 var defaultState = {
     data: [],
@@ -354,7 +352,7 @@ var defaultState = {
     errorMessage: ""
 };
 
-export function speakers(state = defaultState, action) {
+export const speakersReducer = (state = defaultState, action) => {
     switch (action.type) {
 
         case SPEAKER_LOAD: {
@@ -403,14 +401,19 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import { Provider } from 'react-redux';
-import configureStore from "./redux/configureStore";
+import configureStore from "./store/configureStore";
 const store = configureStore(window.__STATE__);
 
+const app = (
+     <Provider store={store}>
+        <BrowserRouter basename="/">
+            <App />
+        </BrowserRouter>
+    </Provider>
+);
+
 const render = () => {
-    return ReactDOM.render(
-      <Provider store={store}>
-        <App />
-      </Provider>,
+    return ReactDOM.render(app,
       document.getElementById('root')
     );
   };

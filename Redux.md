@@ -132,6 +132,7 @@ export default store;
 
 ## React-Redux Example
 * Dispatch actions using this.props.dispatch({type:"CHANGE_ORIGIN_AMOUNT", payload:{}})
+* [mapDispatchToProps](https://gist.github.com/heygrady/c6c17fc7cbdd978f93a746056f618552)
 1. Create new app and install redux
 ```
 npm create-react-app my-app --use-npm
@@ -254,8 +255,9 @@ class UpdateScore extends Component {
         return (<div></div>);
     }
 }
- 
-export default connect((state, props) =>{
+
+//receive state
+const mapStateToProps = (state, props) => {
     console.log('connect state', state);
     console.log('connect props', props);
 
@@ -263,7 +265,22 @@ export default connect((state, props) =>{
     return {
         originAmount: state.originAmount
     }
-})(UpdateScore);
+};
+
+//dispatch actions - functional long-hand version
+const mapDispatchToProps = dispatch => {
+    return{
+        onIncrementCounter:() => dispatch({type:'ACTION'}),
+        onSubtractCounter: () => dispatch({type: actionTypes.SUBTRACT, val: 15}),
+        onStoreResult: (result) => dispatch({type: actionTypes.STORE_RESULT, result: result}),
+        onDeleteResult: (id) => dispatch({type: actionTypes.DELETE_RESULT, resultElId: id})
+    }
+}
+
+//dispatch actions - object short-hand version
+const mapDispatchToProps = { honk } // <-- auto-dispatches
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateScore);
 ```
 5. It is convention to put connected componentents in a containers folder and non connected components in the components folder
 6. The react-redux logger gives extremely useful information in regards to what is happening under the hood in regards to state.
@@ -392,16 +409,12 @@ var makeConversionAjaxCall = debounce(_makeConversionAjaxCall, 300);
 ```
 5. Create a \store\actions\index.js
 ```
-export {
-    speakersFetchData,
-    decrement,
-    fetchConversionRate
-} from './speakers'
+import * as burgerActions from './BurgerBuilder/actions'
 
-export {
-    action1,
-    action2
-} from './sessions'
+export default  [
+    ...burgerActions
+];
+
 ```
 6. It is often a good idea to extract the action constants into another file named actionTypes.js
 ```
