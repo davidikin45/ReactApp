@@ -352,11 +352,16 @@ var defaultState = {
     errorMessage: ""
 };
 
+const deleteResult(state, action) =>{
+    const updatedArray = state.Results.filter(result => result.id !== action.Id);
+    return updateObject(state, {results: updatedArray});
+}
+
 export const speakersReducer = (state = defaultState, action) => {
     switch (action.type) {
 
         case SPEAKER_LOAD: {
-            return Object.assign({}, state, {
+            return updateObject(state, {
                 isLoading: true,
                 hasErrored: false
             });
@@ -368,6 +373,10 @@ export const speakersReducer = (state = defaultState, action) => {
                 isLoading: false,
                 hasErrored: false
             });
+        }
+
+         case SPEAKER_DELETE: {
+           return deleteResult(state, action);
         }
 
         case SPEAKER_LOAD_FAIL: {
@@ -383,7 +392,16 @@ export const speakersReducer = (state = defaultState, action) => {
     }
 }
 ```
-11. Create a reducers\index.js file and put in the following contents. React expects one reducer.
+11. Add a utility.js
+```
+export const updatedObject = (oldObject, updatedValues) => {
+	return {
+			...oldObject,
+			...updatedValues
+		}
+}; 
+```
+12. Create a reducers\index.js file and put in the following contents. React expects one reducer.
 ```
 import { combineReducers } from 'redux';
 import { speakers } from './speakers';
@@ -392,7 +410,7 @@ export default combineReducers({
     speakers : speakers
 })
 ```
-12. update index.js to include the Provider element
+13. update index.js to include the Provider element
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -436,7 +454,7 @@ if (module.hot && process.env.NODE_ENV !== 'production') {
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 ```
-13. Dispatching action in a component
+14. Dispatching action in a component
 ```
 import React, {Component} from 'react';
 
@@ -489,7 +507,7 @@ const mapStateToProps = (state, props) => {
 
 export default connect(mapStateToProps,{speakersFetchData})(SpeakersRedux)
 ```
-14. Creating Selectors can be useful for mapping state to props
+15. Creating Selectors can be useful for mapping state to props
 ```
 import { createSelector } from 'reselect'
 
@@ -513,7 +531,7 @@ export const totalSelector = createSelector(
   (subtotal, tax) => ({ total: subtotal + tax })
 )
 ```
-15. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
+16. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
 ```
 export default connect((state, props) => {
     return {
@@ -525,7 +543,7 @@ export default connect((state, props) => {
     }
 })(Conversion);
 ```
-16. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
+17. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
 
 ## Saga Template
 ```

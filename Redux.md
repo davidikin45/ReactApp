@@ -287,7 +287,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(UpdateScore);
 
 ![alt text](redux-logger.jpg "Redux")
 
-## Redux Thunk (Allows dispatching functions rather than events)
+## Redux Thunk (Allows dispatching async functions rather than events)
 * Dispatch functions using this.props.dispatch(function(dispatch){})
 1. Install axios and redux thunk
 ```
@@ -363,6 +363,25 @@ import axios from 'axios';
 import debounce from 'lodash.debounce';
 import * as actionTypes from './actionTypes';
 
+//sync function
+export const saveResult = ( res ) => {
+    return {
+        type: STORE_RESULT,
+        result: res
+    };
+}
+
+//redux thunk allows this async function
+//Try and pass ALL data into actions rather than using getState
+export const storeResult = ( res ) => {
+    return (dispatch, getState) => {
+        setTimeout( () => {
+            var val = getState().reducer.value;
+            dispatch(saveResult(res));
+        }, 2000 );
+    }
+};
+
 export function speakersFetchData() {
     return {
         type: actionTypes.SPEAKER_LOAD,
@@ -435,6 +454,7 @@ actionTypes.CHANGE_ORIGIN_AMOUNT
 ```
 7. Example reducers\speakers.js
 ```
+import {updateObject} from '../utility';
 import {SPEAKER_LOAD, SPEAKER_LOAD_FAIL, SPEAKER_LOAD_SUCCESS} from "../actions/speakers";
 
 var defaultState = {
@@ -448,7 +468,7 @@ export function speakers(state = defaultState, action) {
     switch (action.type) {
 
         case SPEAKER_LOAD: {
-            return Object.assign({}, state, {
+            return updateObject(state, {
                 isLoading: true,
                 hasErrored: false
             });
@@ -475,7 +495,16 @@ export function speakers(state = defaultState, action) {
     }
 }
 ```
-8. Create a reducers\index.js file and put in the following contents. React expects one reducer.
+8. Add a utility.js
+```
+export const updatedObject = (oldObject, updatedValues) => {
+	return {
+			...oldObject,
+			...updatedValues
+		}
+}; 
+```
+9. Create a reducers\index.js file and put in the following contents. React expects one reducer.
 ```
 import { combineReducers } from 'redux';
 import { speakers } from './speakers';
@@ -484,7 +513,7 @@ export default combineReducers({
     speakers : speakers
 })
 ```
-9. update index.js to include the Provider element
+10. update index.js to include the Provider element
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -523,7 +552,7 @@ if (module.hot && process.env.NODE_ENV !== 'production') {
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 ```
-10. Dispatching action in a component
+11. Dispatching action in a component
 ```
 import React, {Component} from 'react';
 
@@ -573,7 +602,7 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps,{speakersFetchData})(SpeakersRedux)
 ```
-11. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
+12. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
 ```
 export default connect((state, props) => {
     return {
@@ -585,7 +614,7 @@ export default connect((state, props) => {
     }
 })(Conversion);
 ```
-12. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) 
+13. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en) 
 
 ## Reducer Template
 * [Immutable Update Patterns](https://redux.js.org/recipes/structuringreducers/immutableupdatepatterns)
