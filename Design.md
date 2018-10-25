@@ -42,6 +42,13 @@ const spinner = () => {
 export default spinner;
 ```
 
+## Design Frameworks
+* [Materail UI](https://material-ui.com/)
+* [React Bootstrap](https://react-bootstrap.github.io/)
+
+## Alternative
+* [PREACT - Lightweight alternative to React](https://preactjs.com/)
+
 ## Authors
 
 * **David Ikin**
