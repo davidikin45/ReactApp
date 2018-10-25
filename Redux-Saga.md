@@ -341,56 +341,83 @@ export {
     action2
 } from './sessions'
 ```
-10. Example reducers\speakers.js
+10. Example reducers\orders.js
 ```
 import actionTypes from '../actionTypes';
+import {updateObject} from '../utility';
 
 var defaultState = {
-    data: [],
-    isLoading: true,
-    hasErrored: false,
-    errorMessage: ""
+   orders: [],
+   loading: false,
+   purchased: false
 };
 
-const deleteResult(state, action) =>{
-    const updatedArray = state.Results.filter(result => result.id !== action.Id);
-    return updateObject(state, {results: updatedArray});
+const purchaseInit = (state, action) =>{
+    return updateObject(state, {purchased: false});
 }
 
-export const speakersReducer = (state = defaultState, action) => {
+const purchaseBurgerStart = (state, action) =>{
+    return updateObject(state, {loading: true});
+}
+
+const purchaseBurgerSuccess = (state, action) =>{
+    const newOrder = updateObject(action.orderData, {id: action.orderId});
+    return updateObject(state, {
+        loading: false,
+        purchased: true,
+        orders: state.orders.concat(newOrder)})
+}
+
+const purchaseBurgerFail = (state, action) =>{
+    return updateObject(state, {loading: false});
+}
+
+const fetchOrdersStart = (state, action) =>{
+    return updateObject(state, {loading: true});
+}
+
+const fetchOrdersSuccess = (state, action) =>{
+    return updateObject(state, {orders: action.orders, loading: false});
+}
+
+const fetchOrdersFail = (state, action) =>{
+    return updateObject(state, {loading: false});
+}
+
+export const order = (state = defaultState, action) => {
     switch (action.type) {
-
-        case SPEAKER_LOAD: {
-            return updateObject(state, {
-                isLoading: true,
-                hasErrored: false
-            });
+        case actionTypes.PURCHASE_INIT: {
+            return purchaseInit(state, action);
         }
 
-        case SPEAKER_LOAD_SUCCESS: {
-            return Object.assign({}, state, {
-                data: action.payload.data,
-                isLoading: false,
-                hasErrored: false
-            });
+        case actionTypes.PURCHASE_BURGER_START: {
+            return purchaseBurgerStart(state, action);
         }
 
-         case SPEAKER_DELETE: {
-           return deleteResult(state, action);
+        case actionTypes.PURCHASE_BURGER_SUCCESS: {
+            return purchaseBurgerSuccess(state, action);
         }
 
-        case SPEAKER_LOAD_FAIL: {
-            return Object.assign({}, state, {
-                isLoading: false,
-                hasErrored: true,
-                errorMessage: action.error.message
-            });
+        case actionTypes.PURCHASE_BURGER_FAIL: {
+            return purchaseBurgerFail(state, action);
+        }
+
+        case actionTypes.FETCH_ORDERS_START: {
+            return fetchOrdersStart(state, action);
+        }
+
+        case actionTypes.FETCH_ORDERS_SUCCESS: {
+            return fetchOrdersSuccess(state, action);
+        }
+
+        case actionTypes.FETCH_ORDERS_FAIL: {
+            return fetchOrdersFail(state, action);
         }
 
         default:
             return state;
     }
-}
+};
 ```
 11. Add a utility.js
 ```
@@ -401,16 +428,19 @@ export const updatedObject = (oldObject, updatedValues) => {
 		}
 }; 
 ```
-12. Create a reducers\index.js file and put in the following contents. React expects one reducer.
+12. Create a combinerReducers.js file and put in the following contents. React expects one reducer.
 ```
 import { combineReducers } from 'redux';
-import { speakers } from './speakers';
+import * as reducers from './state/reducers'
 
-export default combineReducers({
-    speakers : speakers
-})
+export default combineReducers(reducers);
 ```
-13. update index.js to include the Provider element
+13. Create a reducers.js file
+```
+export {burgerBuilder} from './BurgerBuilder/reducer';
+export {order} from './Order/reducer';
+```
+14. update index.js to include the Provider element
 ```
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -454,7 +484,7 @@ if (module.hot && process.env.NODE_ENV !== 'production') {
 // Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
 ```
-14. Dispatching action in a component
+15. Dispatching action in a component
 ```
 import React, {Component} from 'react';
 
@@ -507,7 +537,7 @@ const mapStateToProps = (state, props) => {
 
 export default connect(mapStateToProps,{speakersFetchData})(SpeakersRedux)
 ```
-15. Creating Selectors can be useful for mapping state to props
+16. Creating Selectors can be useful for mapping state to props
 ```
 import { createSelector } from 'reselect'
 
@@ -531,7 +561,7 @@ export const totalSelector = createSelector(
   (subtotal, tax) => ({ total: subtotal + tax })
 )
 ```
-16. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
+17. Important once user using the combineReducers functionality the reducer must be specified in the mapStateToProps function.
 ```
 export default connect((state, props) => {
     return {
@@ -543,7 +573,7 @@ export default connect((state, props) => {
     }
 })(Conversion);
 ```
-17. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
+18. Install [Redux Dev Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd?hl=en)
 
 ## Saga Template
 ```
