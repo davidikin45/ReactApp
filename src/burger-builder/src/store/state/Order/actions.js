@@ -26,11 +26,11 @@ export const purchaseBurgerFail = (error) =>{
 };
 
 //async
-export const purchaseBurger = (orderData) =>{
+export const purchaseBurger = (orderData, token) =>{
     return async dispatch =>{
          dispatch(purchaseBurgerStart());
          try {
-             var data = await api.saveOrder(orderData);
+             var data = await api.saveOrder(orderData, token);
              dispatch(purchaseBurgerSuccess(data.name, orderData));
          }
          catch(err)
@@ -70,11 +70,11 @@ export const fetchOrdersFail = (error) =>{
 };
 
 //async
-export const fetchOrders = () =>{
+export const fetchOrders = (token, userId) =>{
     return async dispatch =>{
          dispatch(fetchOrdersStart());
          try {
-             var orders = await api.getOrders();
+             var orders = await api.getOrders(token, userId);
              const fetchedOrders=[];
              for (let key in orders)
              {

@@ -11,5 +11,10 @@ export default keyMirror({
     PURCHASE_INIT : null,
     FETCH_ORDERS_START: null,
     FETCH_ORDERS_SUCCESS: null,
-    FETCH_ORDERS_FAIL: null
+    FETCH_ORDERS_FAIL: null,
+    AUTH_START: null,
+    AUTH_SUCCESS: null,
+    AUTH_FAIL: null,
+    AUTH_LOGOUT: null,
+    SET_AUTH_REDIRECT_PATH: null
 })

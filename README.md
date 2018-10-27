@@ -659,6 +659,26 @@ npm test
 1. Create a 'Realtime Database'
 2. Start in test mode
 3. Post to https://react-my-burger-b0ffe.firebaseio.com/{object}.json
+4. Authentication > Set up sign-in method
+5. Email/Password
+6. Sign up Endpoint = https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key=[API_KEY]
+7. Go to Firebase > Authentication > Web setup to get the apiKey
+8. Enable authentication for db
+```
+{
+  "rules": {
+    "ingredients":{
+         ".read": true,
+    		".write": true, 
+    },
+      "orders":{
+         ".read": "auth != null",
+    		 ".write": "auth != null",
+         ".indexOn": ["userId"]
+      }
+  }
+}
+```
 
 ## React Api calls using axios and promises
 1. Install axios

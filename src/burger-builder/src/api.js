@@ -14,13 +14,14 @@ class Api {
 		return response.data;
 	}
 
-	async saveOrder(payload) {
-		var response = await this.client.post('/orders.json', payload);
+	async saveOrder(payload, token) {
+		var response = await this.client.post('/orders.json?auth='+token, payload);
 		return response.data;
 	}
 
-	async getOrders() {
-		var response = await this.client.get('/orders.json');
+	async getOrders(token, userId) {
+		const queryParams = '?auth=' + token + '&orderBy="userId"&equalTo="'+ userId + '"';
+		var response = await this.client.get('/orders.json' + queryParams);
 		return response.data;
 	}
 }

@@ -1,4 +1,11 @@
 export {
+    auth,
+    logout,
+    setAuthRedirectPath,
+    authCheckState
+} from './Auth/actions'
+
+export {
     initIngredients,
     addIngredient,
     removeIngredient
