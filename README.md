@@ -167,6 +167,7 @@ npm test
 ```
 
 ## Building App for Production
+![alt text](deployment.jpg "Deployment")
 1. Check <BrowserRouter basename="/" > is correct
 2. Open a command prompt and direct to the my-app directory.
 3. run the npm run build command.
