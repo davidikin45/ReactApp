@@ -8,8 +8,9 @@ import api from '../../api';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import {Redirect} from 'react-router-dom';
-
+import { updateObject, checkValidity } from '../../shared/utility';
 import * as actions from '../../store/state/actions';
+
 
 class Auth extends Component {
     state = { 
@@ -54,55 +55,22 @@ class Auth extends Component {
         }
      }
 
-     checkValidity(value, rules) {
-        let isValid = true;
-
-        if(!rules) {
-            return true;
-        }
-        
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
-
-        if (rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid
-        }
-
-        if (rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid
-        }
-
-        if (rules.isEmail) {
-            isValid = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value.trim()) && isValid;
-        }
-
-        if (rules.isNumber) {
-            isValid = /^\d+$/.test(value.trim()) && isValid;
-        }
-
-        return isValid;
-    }
-
     inputChangedHandler = (event, controlName) => {
-        const updatedForm = { 
-            ...this.state.controls
-        };
 
-        const updatedFormElement = { 
-            ...updatedForm[controlName]
-        };
+        const updatedControls = updateObject(this.state.controls,{
+            [controlName] : updateObject(this.state.controls[controlName], {
+                value: event.target.value,
+                valid: checkValidity(event.target.value, this.state.controls[controlName].validation),
+                touched: true
+            })
+        });
 
-        updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-        updatedFormElement.touched = true;
-        updatedForm[controlName] = updatedFormElement;
-        
         let formIsValid = true;
-        for (let inputIdentifier in updatedForm) {
-            formIsValid = updatedForm[inputIdentifier].valid && formIsValid;
+        for (let inputIdentifier in updatedControls) {
+            formIsValid = updatedControls[inputIdentifier].valid && formIsValid;
         }
-        this.setState({controls: updatedForm, formIsValid: formIsValid});
+
+        this.setState({controls: updatedControls, formIsValid: formIsValid});
     }
 
     submitHandler = async (e) => {

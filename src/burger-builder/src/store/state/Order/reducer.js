@@ -1,5 +1,5 @@
 import actionTypes from '../actionTypes';
-import {updateObject} from '../utility';
+import {updateObject} from '../../../shared/utility';
 
 var defaultState = {
    orders: [],
@@ -73,3 +73,5 @@ export const order = (state = defaultState, action) => {
             return state;
     }
 };
+
+export default order;

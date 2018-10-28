@@ -1,5 +1,5 @@
 import actionTypes from '../actionTypes';
-import {updateObject} from '../utility';
+import {updateObject} from '../../../shared/utility';
 
 const INGREDIENT_PRICES = {
     salad: 0.5,
@@ -77,3 +77,5 @@ export const burgerBuilder = (state = defaultState, action) => {
             return state;
     }
 };
+
+export default burgerBuilder;

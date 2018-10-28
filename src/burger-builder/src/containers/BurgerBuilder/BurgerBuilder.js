@@ -14,7 +14,7 @@ import * as actions from '../../store/state/actions';
 
 import api from '../../api';
 
-class BurgerBuilder extends Component {
+export class BurgerBuilder extends Component {
 
     //UI state
     state = {  

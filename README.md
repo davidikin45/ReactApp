@@ -159,13 +159,43 @@ code .
 npm start
 ```
 
+## Run Tests
+1. Run the following command:
+```
+npm test
+```
+
 ## Building App for Production
-1. Open a command prompt and direct to the my-app directory.
-2. run the npm run build command.
+1. Check <BrowserRouter basename="/" > is correct
+2. Open a command prompt and direct to the my-app directory.
+3. run the npm run build command.
 ```
 npm run build
 ```
-3. app will be output to my-app\build
+4. app will be output to my-app\build
+
+## Hosting on Firebase
+1. Install the following package
+```
+npm install -g firebase-tools
+```
+2. Run the following command:
+```
+firebase login
+```
+3. Run the following command. It will create a .firebaserc and firebase.json files.
+```
+firebase init
+//select Hosting with up and down arrows.
+//Select project with up and down arrows.
+//Enter build as public directory
+//configure as single-page app = y
+//overwrite index.html = n
+```
+4. Run the following command
+```
+firebase deploy
+```
 
 ## Running Production Build
 1. Open a command prompt and direct to the my-app directory.
@@ -180,7 +210,6 @@ serve -s build
 
 ## Routing
 * [Getting Started with React Router](Router.md)
-
 
 ## Forms
 * [Getting Started with React Forms](Forms.md)
@@ -648,7 +677,8 @@ return (
 export default withClass(App, classes.App);
 ```
 
-## Testing with [Jest](https://jestjs.io/docs/en/tutorial-react.html)
+## Testing with [Jest](https://jestjs.io/docs/en/tutorial-react.html) and [Enzyme](https://airbnb.io/enzyme/)
+[Testing a React App](Testing.md)
 1. Run the following command
 ```
 npm test
