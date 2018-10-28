@@ -276,27 +276,30 @@ export default function configureStore(initialState = {}) {
 ```
 4. Create a store\sagas\initSagas.js and put in the following contents.
 ```
-import * as sagas from './sagas';
+import * as sagas from './state/sagas';
 
 export const initSagas = (sagaMiddleware) => {
     Object.values(sagas).forEach(sagaMiddleware.run.bind(sagaMiddleware));
 }
 ```
-5. Example store\sagas\createUserSaga.js
+5. Example store\state\Users\sagas.js
 ```
 import {delay} from 'redux-saga';
 
-export function* currentUserSaga(){
-    while(true)
-    {
-        yield delay(1000);
-        console.info('User saga loop');
-    }
+export function* authCheckStateSaga(action){
+    yield delay(action.expirationTime * 1000);
+    yield put(actions.logout());
+}    
+
+export function* watchAuthSaga(){
+    yield all([
+          takeEvery(actionTypes.AUTH_CHECK_TIMEOUT, checkAuthTimeoutSaga),
+	]);
 }
 ```
-6. Create a store\sagas\index.js file and put in the following contents.
+6. Create a store\state\sagas.js file and put in the following contents.
 ```
-export{ currentUserSaga } from './createUserSaga'
+export { watchUserSaga } from './Users/sagas.js'
 ```
 7. Example store\actions\speakers.js.
 * The event payloads are stored in a seperate file.
@@ -621,7 +624,7 @@ import * as action from './actions';
 import * as requestActions from 'store/state/requests/actions';
 import api from './api';
 
-export default function* worker1(action) {
+export function* worker1(action) {
     try
     {
         yield put(requestActions.RequestStarted(action.type));
@@ -637,7 +640,7 @@ export default function* worker1(action) {
 }
 
 
-export default function* worker2(action) {
+export function* worker2(action) {
     try
     {
         yield put(requestActions.RequestStarted(action.type));
@@ -652,10 +655,11 @@ export default function* worker2(action) {
     }
 }
 
-export default function* foreman() {
-	yield all([
-		takeLatest(actions.action1, worker1),
-        takeLatest(actions.action2, worker2),
+//all allows multiple tasks to run simultaneously
+export function* watcherSaga(){
+    yield all([
+        takeEvery(actionTypes.AUTH_INIT_LOGOUT, worker1),
+        takeEvery(actionTypes.AUTH_CHECK_TIMEOUT, worker2)
 	]);
 }
 ```

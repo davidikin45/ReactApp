@@ -43,6 +43,8 @@ export default spinner;
 ```
 
 ## Design Frameworks
+* [React Rocks](https://react.rocks/)
+* [Gatsby][https://www.gatsbyjs.org/]
 * [Materail UI](https://material-ui.com/)
 * [React Bootstrap](https://react-bootstrap.github.io/)
 
