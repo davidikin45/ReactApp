@@ -217,6 +217,7 @@ serve -s build
 * [Getting Started with React Forms](Forms.md)
 
 ## Useful things to know
+* [ES6](ES6.md)
 * function name(arg){ } is equivalent to const name = (arg) =>{ } or  const name = arg =>{ }
 * you can use async/await rather promises .then()
 * Use let/const and not var
