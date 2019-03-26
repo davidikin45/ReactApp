@@ -662,6 +662,13 @@ componentWillUnmount()
 componentDidCatch()
 ```
 
+## Old vs New Life Cycle
+* [React Component Life Cycle Old vs New](https://medium.com/@kartikagarwal01/react-component-lifecycle-old-vs-new-32757aee5850)
+
+![alt text](old-life-cycle.jpeg "Old Life Cycle")
+
+![alt text](life-cycle.jpeg "New Life Cycle")
+
 ## Props Type Safety
 ```
 npm install --save prop-types
