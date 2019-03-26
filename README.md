@@ -645,12 +645,17 @@ export default House;
 5. componentDidMount() //Called immediately after first render once.
 
 ## Lifecycle Methods Updating
-1. componentWillReceiveProps(nextProps) - Only if updated externally
-2. shouldComponentUpdate(nextProps, nextState)
-3. componentWillUpdate(nextProps, nextState)
+* Component shouldComponentUpdate return true. By default update occurs if props or state is set regardless if they have changed.
+* PureComponent shouldComponentUpdate will compare props and state value before rendering.
+
+1. componentWillReceiveProps(nextProps) - Only if updated externally - Deprecated
+1. static getDerivedStateFromProps(props, state) - return new state based on props or null for no update
+2. shouldComponentUpdate(nextProps, nextState) - performance optimization - By default returns true
+3. componentWillUpdate(nextProps, nextState) - Deprecated
 4. render()
-5. updateChildComponentProps
-6. componentDidUpdate()
+5. getSnapshotBeforeUpdate(prevProps, prevState) - return snapshot object or null. Any value returned by this lifecycle will be passed as a parameter to componentDidUpdate().
+6. updateChildComponentProps
+7. componentDidUpdate(prevProps, prevState, snapshot)
 
 ## Lifecycle Methods Unmount
 ```
