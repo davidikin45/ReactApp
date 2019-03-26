@@ -524,6 +524,49 @@ function Example() {
   );
 }
 ```
+```
+import React, { useState, useEffect } from 'react';
+
+const Example = () => {
+  // Declare a new state variable, which we'll call "count"
+  const [count, setCount] = useState(0);
+  const [age, setAge] = useState(42);
+  const [fruit, setFruit] = useState('banana');
+  const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
+  
+  // Similar to componentDidMount
+  useEffect(() => {
+    
+  }, []);
+  
+  // Similar to componentDidUpdate
+  useEffect(() => {
+    
+  }, [count]);
+  
+  // Combination of componentDidMount, componentDidUpdate and ComponentWillUnmount:
+  useEffect(() => {
+    // Update the document title using the browser API
+    document.title = `You clicked ${count} times`;
+  });
+  
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
+```
 
 ## Prop Types for Type Safety
 1. It is a good idea to always use prop-types for type safety.
