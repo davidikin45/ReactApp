@@ -491,9 +491,21 @@ function Example() {
   const [fruit, setFruit] = useState('banana');
   const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
   
+  fetchMyAPI = async () => {
+      try
+      {
+        let url = 'http://something';
+        let config = {};
+        const response = await myFetch(url);
+      }
+      catch (e) {
+        console.error(e);
+      }
+    }
+
   // Similar to componentDidMount
   useEffect(() => {
-    
+    fetchMyAPI();
   }, []);
   
   // Similar to componentDidUpdate
@@ -534,9 +546,21 @@ const Example = () => {
   const [fruit, setFruit] = useState('banana');
   const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
   
+  fetchMyAPI = async () => {
+      try
+      {
+        let url = 'http://something';
+        let config = {};
+        const response = await myFetch(url);
+      }
+      catch (e) {
+        console.error(e);
+      }
+    }
+
   // Similar to componentDidMount
   useEffect(() => {
-    
+    fetchMyAPI();
   }, []);
   
   // Similar to componentDidUpdate
