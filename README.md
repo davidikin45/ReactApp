@@ -303,11 +303,12 @@ Initialize state with state = {};
 <Header>This is the children content</Header>
 ```
 ```
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from '../../assets/svg/logo.svg';
 
-const header = (props) => (
- <header className="row">
+const header = (props) => {
+ // You can use Hooks here!
+ return (<header className="row">
     <div className="col-md-5">
         <img src={logo} className="logo" alt="logo" />
     </div>
@@ -315,8 +316,28 @@ const header = (props) => (
         Providing houses world wide
     </div>
     {props.children}
- </header>
-);
+ </header>);
+};
+
+export default header; 
+```
+
+```
+import React, { useState, useEffect } from 'react';
+import logo from '../../assets/svg/logo.svg';
+
+function header(props) {
+ // You can use Hooks here!
+ return (<header className="row">
+    <div className="col-md-5">
+        <img src={logo} className="logo" alt="logo" />
+    </div>
+    <div className="col-md-7 mt-5 subtitle">
+        Providing houses world wide
+    </div>
+    {props.children}
+ </header>);
+};
 
 export default header; 
 ```
@@ -446,6 +467,62 @@ class Score extends React.Component {
 }
 
 ReactDOM.render(<Score teamName="Tigers" />, mountNode);
+```
+
+## Hooks
+
+* Hooks don't work inside classes - they let you use React without classes
+* useState returns a pair: the current state value and a function that lets you update it.
+* The only argument to useState is the initial state.
+* The state here doesn't have to be an object - although it can be if you want. The initial state argument is only used during the first render.
+* The Effect Hook, useEffect, adds the ability to perform side effects from a function component. 
+* Only call Hooks at the top level. Don't call Hooks inside loops, conditions, or nested functions.
+* Only call Hooks from React function components. Don't call Hooks from regular JavaScript functions. 
+* In a class component we use {this.state.count} but in a function component (aka stateless component) we just use {count}.
+* In a class component we use this.setState({ count: this.state.count + 1 } but in a function component (aka stateless component) we just use setCount(count + 1).
+
+```
+import React, { useState, useEffect } from 'react';
+
+function Example() {
+  // Declare a new state variable, which we'll call "count"
+  const [count, setCount] = useState(0);
+  const [age, setAge] = useState(42);
+  const [fruit, setFruit] = useState('banana');
+  const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
+  
+  // Similar to componentDidMount
+  useEffect(() => {
+    
+  }, []);
+  
+  // Similar to componentDidUpdate
+  useEffect(() => {
+    
+  }, [count]);
+  
+  // Combination of componentDidMount, componentDidUpdate and ComponentWillUnmount:
+  useEffect(() => {
+    // Update the document title using the browser API
+    document.title = `You clicked ${count} times`;
+  });
+  
+  useEffect(() => {
+    ChatAPI.subscribeToFriendStatus(props.friend.id, handleStatusChange);
+    return () => {
+      ChatAPI.unsubscribeFromFriendStatus(props.friend.id, handleStatusChange);
+    };
+  });
+
+  return (
+    <div>
+      <p>You clicked {count} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
+}
 ```
 
 ## Prop Types for Type Safety
