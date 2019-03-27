@@ -137,6 +137,19 @@ Result
 <li className={[activeClass, data.klass, "main-class"].join(' ')} />
 ```
 
+* If ejected modify webpack.config.js to enable CSS modules
+```
+{
+	  test: cssRegex,
+	  exclude: cssModuleRegex,
+	  use: getStyleLoaders({
+	  importLoaders: 1,
+	  modules: true,
+	  localIdentName: '[name]__[local]__[hash:base64:5]'
+	}),
+}
+```
+
 ## Composes with CSS Modules
 default-links.css
 ```
