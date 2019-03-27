@@ -676,6 +676,7 @@ componentDidCatch()
 
 ## Set State Cheatsheet
 * When setting state in componentDidUpdate it needs to be conditional to prevent an infinite loop.
+
 ![alt text](setstate.png "setState Cheatsheet")
 
 ## Props Type Safety
