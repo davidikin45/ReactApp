@@ -698,6 +698,8 @@ const style={
 ```
 
 ## Scoped Css modules
+* [See Styling React App](Styling.md)
+
 1. No longer need to eject
 ```
 2. Import classes instead of the whole css file by naming css file *.module.css
