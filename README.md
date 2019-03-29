@@ -513,6 +513,16 @@ function Example() {
     
   }, [count]);
   
+   const prevCount = usePrevious(prevCount);
+   const prevSuccess = usePrevious(props.success);
+  function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  }
+  
   // Combination of componentDidMount, componentDidUpdate and ComponentWillUnmount:
   useEffect(() => {
     // Update the document title using the browser API
@@ -567,6 +577,16 @@ const Example = () => {
   useEffect(() => {
     
   }, [count]);
+  
+   const prevCount = usePrevious(prevCount);
+   const prevSuccess = usePrevious(props.success);
+  function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    });
+    return ref.current;
+  }
   
   // Combination of componentDidMount, componentDidUpdate and ComponentWillUnmount:
   useEffect(() => {
