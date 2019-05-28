@@ -1184,6 +1184,7 @@ Lets you write modern JavaScript code that still works in older browsers.
 * [React.js: Getting Started](https://www.pluralsight.com/courses/react-js-getting-started)
 * [A Practical Start with React](https://app.pluralsight.com/library/courses/react-practical-start/table-of-contents)
 * [Building a Website with React and ASP.NET Core](https://www.pluralsight.com/courses/aspdotnet-core-react-building-website)
+* [Using React Hooks](https://app.pluralsight.com/library/courses/using-react-hooks)
 
 
 
