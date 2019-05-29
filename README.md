@@ -32,6 +32,7 @@ npm install prop-types
 npm install react-router-dom
 npm install axios
 npm install lodash
+npm install react-toastify
 ```
 3. Add the following import to src/index.js
 ```
@@ -468,6 +469,41 @@ class Score extends React.Component {
 
 ReactDOM.render(<Score teamName="Tigers" />, mountNode);
 ```
+## Config
+* Within App.js
+```
+export const ConfigContext = React.createContext();
+
+const configValue = {
+	configValue: true
+};
+
+class App extends Component {
+
+  render() {
+      let routes  = (
+        <Switch>
+              <Route path="/auth" component={Auth} />
+              <Route path="/" exact component={BurgerBuilder} />
+              <Redirect to="/"/>
+        </Switch>
+      );
+
+      return (
+        <ConfigContext.Provider value={configValue}>
+          <div>
+          <Layout>
+              {routes}
+          </Layout>
+          </div>
+        </ConfigContext.Provider>
+      );
+    }
+}
+
+export default App;
+```
+
 
 ## Hooks
 
@@ -475,15 +511,19 @@ ReactDOM.render(<Score teamName="Tigers" />, mountNode);
 * useState returns a pair: the current state value and a function that lets you update it.
 * The only argument to useState is the initial state.
 * The state here doesn't have to be an object - although it can be if you want. The initial state argument is only used during the first render.
-* The Effect Hook, useEffect, adds the ability to perform side effects from a function component. 
+* The Effect Hook, useEffect, adds the ability to perform side effects from a function component.
 * Only call Hooks at the top level. Don't call Hooks inside loops, conditions, or nested functions.
 * Only call Hooks from React function components. Don't call Hooks from regular JavaScript functions. 
 * In a class component we use {this.state.count} but in a function component (aka stateless component) we just use {count}.
 * In a class component we use this.setState({ count: this.state.count + 1 } but in a function component (aka stateless component) we just use setCount(count + 1).
-* useRef can be used to get previous values or work directly with element in the DOM.
+* useRef = can be used to get previous values or work directly with element in the DOM.
+* useContext =
+* useReducer =
+* useCallback = 
+* useMemo = 
 
 ```
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext, useReducer, useCallback, useMemo } from 'react';
 
 function Example() {
   // Declare a new state variable, which we'll call "count"
@@ -556,7 +596,7 @@ function Example() {
 }
 ```
 ```
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext, useReducer, useCallback, useMemo } from 'react';
 
 const Example = () => {
   // Declare a new state variable, which we'll call "count"

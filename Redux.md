@@ -140,6 +140,7 @@ npm install redux
 npm install react-redux
 npm install redux-logger
 npm install redux-immutable-state-invariant
+npm install react-toastify
 ```
 2. create a store/configureStore.js file and import from index.js
 ```

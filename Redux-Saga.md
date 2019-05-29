@@ -212,6 +212,7 @@ npm install redux-immutable-state-invariant --save-dev
 npm install redux-actions
 npm install reselect
 npm install prop-types
+npm install react-toastify
 ```
 2. Create the following directories
 ```
