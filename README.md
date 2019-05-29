@@ -480,9 +480,10 @@ ReactDOM.render(<Score teamName="Tigers" />, mountNode);
 * Only call Hooks from React function components. Don't call Hooks from regular JavaScript functions. 
 * In a class component we use {this.state.count} but in a function component (aka stateless component) we just use {count}.
 * In a class component we use this.setState({ count: this.state.count + 1 } but in a function component (aka stateless component) we just use setCount(count + 1).
+* useRef can be used to get previous values or work directly with element in the DOM.
 
 ```
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 function Example() {
   // Declare a new state variable, which we'll call "count"
@@ -491,6 +492,12 @@ function Example() {
   const [fruit, setFruit] = useState('banana');
   const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
   
+  const inputEl = useRef(null);
+  const onButtonClick = () => {
+    // `current` points to the mounted text input element
+    inputEl.current.focus();
+  };
+  
   fetchMyAPI = async () => {
       try
       {
@@ -539,6 +546,8 @@ function Example() {
   return (
     <div>
       <p>You clicked {count} times</p>
+	  <input ref={inputEl} type="text" />
+	  <button onClick={onButtonClick}>Focus the input</button>
       <button onClick={() => setCount(count + 1)}>
         Click me
       </button>
@@ -547,7 +556,7 @@ function Example() {
 }
 ```
 ```
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const Example = () => {
   // Declare a new state variable, which we'll call "count"
@@ -555,6 +564,12 @@ const Example = () => {
   const [age, setAge] = useState(42);
   const [fruit, setFruit] = useState('banana');
   const [todos, setTodos] = useState([{ text: 'Learn Hooks' }]);
+  
+  const inputEl = useRef(null);
+  const onButtonClick = () => {
+    // `current` points to the mounted text input element
+    inputEl.current.focus();
+  };
   
   fetchMyAPI = async () => {
       try
@@ -604,6 +619,8 @@ const Example = () => {
   return (
     <div>
       <p>You clicked {count} times</p>
+	  <input ref={inputEl} type="text" />
+	  <button onClick={onButtonClick}>Focus the input</button>
       <button onClick={() => setCount(count + 1)}>
         Click me
       </button>
